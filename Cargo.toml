@@ -1,0 +1,12 @@
+[package]
+name = "cargo-android"
+version = "0.1.0"
+authors = ["Bailey Cosier <bailey.cosier@gmail.com>"]
+license = "MIT"
+description = "Cargo subcommand providing Android build support and automation"
+repository = "https://github.com/cosier/cargo-android"
+
+[dependencies]
+rustc-serialize = "0.3.24"
+toml = "0.4.2"
+term = "0.4.6"
