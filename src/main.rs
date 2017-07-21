@@ -2,9 +2,6 @@
 extern crate serde;
 extern crate serde_json;
 
-extern crate rustc_serialize;
-
-
 extern crate term;
 extern crate toml;
 
@@ -50,9 +47,9 @@ fn current_manifest_path() -> PathBuf {
         }
     }
 
-    #[derive(RustcDecodable)]
+    #[derive(Deserialize)]
     struct Data { root: String }
     let stdout = String::from_utf8(output.stdout).unwrap();
-    let decoded: Data = rustc_serialize::json::decode(&stdout).unwrap();
+    let decoded: Data = serde_json::from_str(&stdout).unwrap();
     Path::new(&decoded.root).to_owned()
 }

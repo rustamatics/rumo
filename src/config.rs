@@ -141,18 +141,18 @@ fn map_to_string(input_map: Option<BTreeMap<String, String>>) -> Option<String> 
     }
 }
 
-#[derive(Debug, Clone, RustcDecodable, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct TomlPackage {
     name: String,
     metadata: Option<TomlMetadata>,
 }
 
-#[derive(Debug, Clone, RustcDecodable, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct TomlMetadata {
     android: Option<TomlAndroid>,
 }
 
-#[derive(Debug, Clone, RustcDecodable, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct TomlAndroid {
     package_name: Option<String>,
     label: Option<String>,

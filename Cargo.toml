@@ -7,7 +7,6 @@ description = "Cargo subcommand providing Android build support and automation"
 repository = "https://github.com/cosier/cargo-android"
 
 [dependencies]
-rustc-serialize = "0.3.24"
 toml = "0.4.2"
 term = "0.4.6"
 
