@@ -5,7 +5,6 @@ use std::io::Read;
 use std::path::Path;
 use std::path::PathBuf;
 use toml;
-use toml::Parser as TomlParser;
 
 pub struct Config {
     /// Path to the root of the Android SDK.
@@ -78,8 +77,10 @@ pub fn load(manifest_path: &Path) -> Config {
             content
         };
 
-        let toml = TomlParser::new(&content).parse().unwrap();
-        let decoded: TomlPackage = toml::decode(toml["package"].clone()).unwrap();
+        let toml  = content.parse::<toml::Value>().unwrap();
+        // let decoded: TomlPackage = toml::decode(toml["package"].clone()).unwrap();
+        let decoded: TomlPackage = toml.try_into::<TomlPackage>().unwrap();
+
         let package_name = decoded.name.clone();
         (package_name, decoded.metadata.and_then(|m| m.android))
     };
@@ -140,18 +141,18 @@ fn map_to_string(input_map: Option<BTreeMap<String, String>>) -> Option<String> 
     }
 }
 
-#[derive(Debug, Clone, RustcDecodable)]
+#[derive(Debug, Clone, RustcDecodable, Serialize, Deserialize)]
 struct TomlPackage {
     name: String,
     metadata: Option<TomlMetadata>,
 }
 
-#[derive(Debug, Clone, RustcDecodable)]
+#[derive(Debug, Clone, RustcDecodable, Serialize, Deserialize)]
 struct TomlMetadata {
     android: Option<TomlAndroid>,
 }
 
-#[derive(Debug, Clone, RustcDecodable)]
+#[derive(Debug, Clone, RustcDecodable, Serialize, Deserialize)]
 struct TomlAndroid {
     package_name: Option<String>,
     label: Option<String>,
