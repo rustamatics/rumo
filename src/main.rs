@@ -23,6 +23,9 @@ mod build;
 mod config;
 mod install;
 mod termcmd;
+mod utils;
+
+use utils::lnbreak;
 
 #[derive(Debug)]
 enum ManifestLoadError {
@@ -32,15 +35,14 @@ enum ManifestLoadError {
 type ManifestResult = Result<PathBuf, ManifestLoadError>;
 
 fn main() {
-    // Provide a visual line break for development mode
-    #[cfg(debug_assertions)]
-    print!("\n\n");
-
     // Initialize the environment logger only once.
     // This should be the first thing to happen.
     if let Err(e) = env_logger::init() {
         error!("Failed to initialise environment logger because {}", e);
     }
+
+    // Visual line break for debug mode
+    lnbreak();
 
     const VERSION: Option<&'static str> = option_env!("CARGO_PKG_VERSION");
     const DESC: Option<&'static str> = option_env!("CARGO_PKG_DESCRIPTION");
