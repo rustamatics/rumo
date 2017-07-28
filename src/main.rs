@@ -19,6 +19,7 @@ mod config;
 mod install;
 mod termcmd;
 
+#[derive(Debug)]
 enum ManifestLoadError {
     CargoLoadFailure,
     MissingPath
@@ -42,6 +43,11 @@ fn main() {
              .long("release")
              .help("Trigger release build optimizations"))
 
+        .arg(Arg::with_name("target")
+             .long("target")
+             .help("Specify target from multiple [[bin]] in Cargo.toml")
+             .takes_value(true))
+
         .subcommand(SubCommand::with_name("build")
              .help("Compile Project into a APK\n"))
 
@@ -49,13 +55,9 @@ fn main() {
              .help("Install Android APK onto Device\n"));
 
     let matches = app.clone().get_matches();
-
-    // let current_manifest = current_manifest_path();
-
-   let current_manifest = if let Some(explicit_dir) = matches.value_of("project-dir") {
-        explicit_dir
-    } else {
-        current_manifest_path()
+    let current_manifest: PathBuf = match matches.value_of("project-dir") {
+        Some(p) => PathBuf::from(p),
+        None => { current_manifest_path().unwrap() }
     };
 
 
@@ -63,9 +65,9 @@ fn main() {
     let mut config = config::load(&current_manifest);
     config.release = matches.is_present("release");
 
-    // if let Some(target_arg_index) = env::args().position(|s| &s[..] == "--bin") {
-    //     config.target = env::args().skip(target_arg_index + 1).next();
-    // }
+    if let Some(target) = matches.value_of("target") {
+        config.target = Some(target.to_owned());
+    }
 
     if let Some(sub) = matches.subcommand_matches("build") {
         // build::build(&current_manifest, &config);
@@ -75,11 +77,11 @@ fn main() {
          // install::install(&current_manifest, &config);
     }
 
+    // If we have not matched any sub command at this point,
+    // fallback to application help screen.
     else {
         app.print_help();
     }
-
-
 }
 
 
