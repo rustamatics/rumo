@@ -9,12 +9,10 @@ extern crate serde_json;
 
 extern crate term;
 extern crate toml;
-
 extern crate clap;
 
 use std::path::Path;
 use std::path::PathBuf;
-// use std::process::exit;
 use std::process::Command;
 
 use clap::{Arg, App, SubCommand};
@@ -25,13 +23,14 @@ mod install;
 mod termcmd;
 mod utils;
 
-use utils::lnbreak;
+use utils::{lnbreak};
 
 #[derive(Debug)]
 enum ManifestLoadError {
     CargoLoadFailure,
     MissingPath
 }
+
 type ManifestResult = Result<PathBuf, ManifestLoadError>;
 
 fn main() {
@@ -79,22 +78,21 @@ fn main() {
 
     debug!("Determined manifest file: {:?}", current_manifest);
 
-    // // Fetching the configuration for the build.
+    // Fetching the configuration for the build.
     let mut config = config::load(&current_manifest);
     config.release = matches.is_present("release");
 
+    // Rewrap optional provided target from str to owned String
     if let Some(target) = matches.value_of("target") {
         config.target = Some(target.to_owned());
     }
 
-    if let Some(sub) = matches.subcommand_matches("build") {
-        debug!("build triggered")
-        // build::build(&current_manifest, &config);
+    if let Some(_) = matches.subcommand_matches("build") {
+        build::build(&current_manifest, &config);
     }
 
-    else if let Some(sub) = matches.subcommand_matches("install") {
-        debug!("install triggered")
-        // install::install(&current_manifest, &config);
+    else if let Some(_) = matches.subcommand_matches("install") {
+        install::install(&current_manifest, &config);
     }
 
     // If we have not matched any sub command at this point,
