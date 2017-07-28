@@ -145,8 +145,7 @@ pub fn build(manifest_path: &Path, config: &Config) -> BuildResult {
         };
 
         // Create android cpu abi name
-        let abi = if build_target.starts_with("arm") { "armeabi" }
-                  // TODO: armeabi-v7a
+        let abi = if build_target.starts_with("arm") { "armeabi-v7a" }
                   else if build_target.starts_with("aarch64") { "arm64-v8a" }
                   else if build_target.starts_with("i") { "x86" }
                   else if build_target.starts_with("x86_64") { "x86_64" }
