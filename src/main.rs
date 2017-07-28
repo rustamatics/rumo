@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 #[macro_use] extern crate log;
 extern crate env_logger;
 
@@ -12,7 +14,7 @@ extern crate clap;
 
 use std::path::Path;
 use std::path::PathBuf;
-use std::process::exit;
+// use std::process::exit;
 use std::process::Command;
 
 use clap::{Arg, App, SubCommand};
@@ -30,7 +32,9 @@ enum ManifestLoadError {
 type ManifestResult = Result<PathBuf, ManifestLoadError>;
 
 fn main() {
-    env_logger::init();
+    if let Err(e) = env_logger::init() {
+        error!("Failed to initialise environment logger because {}", e);
+    }
 
     const VERSION: Option<&'static str> = option_env!("CARGO_PKG_VERSION");
     const DESC: Option<&'static str> = option_env!("CARGO_PKG_DESCRIPTION");
@@ -76,17 +80,21 @@ fn main() {
     }
 
     if let Some(sub) = matches.subcommand_matches("build") {
+        debug!("build triggered")
         // build::build(&current_manifest, &config);
     }
 
     else if let Some(sub) = matches.subcommand_matches("install") {
-         // install::install(&current_manifest, &config);
+        debug!("install triggered")
+        // install::install(&current_manifest, &config);
     }
 
     // If we have not matched any sub command at this point,
     // fallback to application help screen.
     else {
-        app.print_help();
+        if let Err(e) = app.print_help() {
+            error!("Failed to print application help because {}", e);
+        }
     }
 }
 

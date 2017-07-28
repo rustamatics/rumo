@@ -77,6 +77,8 @@ pub fn load(manifest_path: &Path) -> Config {
             content
         };
 
+        debug!("loaded manifest_content");
+
         let toml  = content.parse::<toml::Value>().unwrap();
         // let decoded: TomlPackage = toml::decode(toml["package"].clone()).unwrap();
         let decoded: TomlPackage = toml.try_into::<TomlPackage>().unwrap();
