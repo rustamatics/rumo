@@ -1,3 +1,6 @@
+#[macro_use] extern crate log;
+extern crate env_logger;
+
 #[macro_use] extern crate serde_derive;
 extern crate serde;
 extern crate serde_json;
@@ -27,6 +30,8 @@ enum ManifestLoadError {
 type ManifestResult = Result<PathBuf, ManifestLoadError>;
 
 fn main() {
+    env_logger::init();
+
     const VERSION: Option<&'static str> = option_env!("CARGO_PKG_VERSION");
     const DESC: Option<&'static str> = option_env!("CARGO_PKG_DESCRIPTION");
 
@@ -60,6 +65,7 @@ fn main() {
         None => { current_manifest_path().unwrap() }
     };
 
+    debug!("Determined manifest file: {:?}", current_manifest);
 
     // // Fetching the configuration for the build.
     let mut config = config::load(&current_manifest);

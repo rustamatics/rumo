@@ -1,5 +1,5 @@
 [package]
-name = "cargo-android"
+name = "droid"
 version = "0.1.0"
 authors = ["Bailey Cosier <bailey.cosier@gmail.com>"]
 license = "MIT"
@@ -10,6 +10,9 @@ repository = "https://github.com/cosier/cargo-android"
 clap = "^2.25.1"
 toml = "0.4.2"
 term = "0.4.6"
+
+log = "0.3.8"
+env_logger = "0.4.3"
 
 serde = "^1.0.10"
 serde_derive = "^1.0.10"
