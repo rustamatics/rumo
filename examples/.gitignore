@@ -1,0 +1,100 @@
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# .gitignore
+# source: https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+# ----------------
+# Eclipse specific
+# ----------------
+.project
+.classpath
+.loadpath
+.cproject
+.buildpath
+.target
+.settings/
+.externalToolBuilders/
+*.launch
+
+# ------------------
+# injtelliJ specific
+# ------------------
+*.iml
+*.ipr
+*.iws
+*.idea
+
+# -----------------
+# NetBeans specific
+# -----------------
+*~.nib
+nbactions*.xml
+
+# ------------
+# vim specific
+# ------------
+*.swp
+
+# --------------
+# MacOS specific
+# --------------
+tmp/
+*.tmp
+*.bak
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ---------------
+# Gradle specific
+# ---------------
+.gradle
+
+# -----------------
+# TeXlipse specific
+# -----------------
+.texlipse
+
+# ------------------
+# Generator specific
+# ------------------
+app/bower_components
+node_modules
+dist
+.editorconfig
+.jshintrc
+bower.json
+package.json
+local.properties
+
+# ---------------
+# Compiled source
+# ---------------
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# ---------
+# Packaging
+# ---------
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.rar
+*.tar
+*.zip
+
+# -------
+# Logging
+# -------
+*.log

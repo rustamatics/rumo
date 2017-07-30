@@ -6,6 +6,33 @@ use std::path::Path;
 use std::path::PathBuf;
 use toml;
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct TomlPackage {
+    name: String,
+    metadata: Option<TomlMetadata>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct TomlMetadata {
+    android: Option<TomlAndroid>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct TomlAndroid {
+    package_name: Option<String>,
+    label: Option<String>,
+    icon: Option<String>,
+    assets: Option<String>,
+    res: Option<String>,
+    android_version: Option<u32>,
+    fullscreen: Option<bool>,
+    application_attributes: Option<BTreeMap<String, String>>,
+    activity_attributes: Option<BTreeMap<String, String>>,
+    build_targets: Option<Vec<String>>,
+    opengles_version_major: Option<u8>,
+    opengles_version_minor: Option<u8>,
+}
+
 pub struct Config {
     /// Path to the root of the Android SDK.
     pub sdk_path: PathBuf,
@@ -91,7 +118,7 @@ pub fn load(manifest_path: &Path) -> Config {
         let mut try = env::var("ANDROID_SDK_HOME").ok();
 
         if try.is_none() {
-            try = env::var("ANDROID_HOME").ok();
+            try = env::var("ANDROID_SDK").ok();
         }
 
         try.expect("Please set the path to the Android SDK with either the $ANDROID_SDK_HOME or \
@@ -139,31 +166,4 @@ fn map_to_string(input_map: Option<BTreeMap<String, String>>) -> Option<String> 
     } else {
         None
     }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct TomlPackage {
-    name: String,
-    metadata: Option<TomlMetadata>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct TomlMetadata {
-    android: Option<TomlAndroid>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct TomlAndroid {
-    package_name: Option<String>,
-    label: Option<String>,
-    icon: Option<String>,
-    assets: Option<String>,
-    res: Option<String>,
-    android_version: Option<u32>,
-    fullscreen: Option<bool>,
-    application_attributes: Option<BTreeMap<String, String>>,
-    activity_attributes: Option<BTreeMap<String, String>>,
-    build_targets: Option<Vec<String>>,
-    opengles_version_major: Option<u8>,
-    opengles_version_minor: Option<u8>,
 }
