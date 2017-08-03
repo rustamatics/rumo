@@ -4,7 +4,12 @@ version = "0.1.0"
 authors = ["Bailey Cosier <bailey.cosier@gmail.com>"]
 license = "MIT"
 description = "Cargo subcommand providing Android build support and automation"
-repository = "https://github.com/cosier/cargo-android"
+repository = "https://github.com/cosier/cargo-droid"
+
+build = "build.rs"
+
+[build-dependencies]
+zip = "0.2.5"
 
 [dependencies]
 clap = "^2.25.1"
