@@ -3,4 +3,8 @@ name = "simple"
 version = "0.1.0"
 authors = ["Bailey Cosier <bailey.cosier@gmail.com>"]
 
+[lib]
+name = "simple"
+crate-type = ["dylib", "rlib"]
+
 [dependencies]
