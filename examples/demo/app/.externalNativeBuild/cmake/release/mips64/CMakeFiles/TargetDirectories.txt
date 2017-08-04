@@ -1,0 +1,3 @@
+/Users/bailey/Developer/work/droid/examples/armbuild/app/.externalNativeBuild/cmake/release/mips64/CMakeFiles/edit_cache.dir
+/Users/bailey/Developer/work/droid/examples/armbuild/app/.externalNativeBuild/cmake/release/mips64/CMakeFiles/rebuild_cache.dir
+/Users/bailey/Developer/work/droid/examples/armbuild/app/.externalNativeBuild/cmake/release/mips64/CMakeFiles/native-lib.dir

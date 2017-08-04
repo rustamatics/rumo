@@ -1,0 +1,41 @@
+
+{
+	"buildFiles" : 
+	[
+		"/Users/bailey/Developer/work/droid/examples/armbuild/app/CMakeLists.txt"
+	],
+	"cleanCommands" : 
+	[
+		"/Users/bailey/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/bailey/Developer/work/droid/examples/armbuild/app/.externalNativeBuild/cmake/release/arm64-v8a --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"native-lib-Release-arm64-v8a" : 
+		{
+			"abi" : "arm64-v8a",
+			"artifactName" : "native-lib",
+			"buildCommand" : "/Users/bailey/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/bailey/Developer/work/droid/examples/armbuild/app/.externalNativeBuild/cmake/release/arm64-v8a --target native-lib",
+			"buildType" : "release",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=aarch64-none-linux-android --gcc-toolchain=/Users/bailey/Android/android-ndk-r15b/toolchains/aarch64-linux-android-4.9/prebuilt/darwin-x86_64 --sysroot=/Users/bailey/Android/android-ndk-r15b/sysroot  -Dnative_lib_EXPORTS -isystem /Users/bailey/Android/android-ndk-r15b/sources/cxx-stl/gnu-libstdc++/4.9/include -isystem /Users/bailey/Android/android-ndk-r15b/sources/cxx-stl/gnu-libstdc++/4.9/libs/arm64-v8a/include -isystem /Users/bailey/Android/android-ndk-r15b/sources/cxx-stl/gnu-libstdc++/4.9/include/backward  -isystem /Users/bailey/Android/android-ndk-r15b/sysroot/usr/include/aarch64-linux-android -D__ANDROID_API__=21 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security  -std=c++11 -O2 -DNDEBUG  -fPIC    -c ",
+					"src" : "/Users/bailey/Developer/work/droid/examples/armbuild/app/src/main/cpp/native-lib.cpp",
+					"workingDirectory" : "/Users/bailey/Developer/work/droid/examples/armbuild/app/.externalNativeBuild/cmake/release/arm64-v8a"
+				}
+			],
+			"output" : "/Users/bailey/Developer/work/droid/examples/armbuild/app/build/intermediates/cmake/release/obj/arm64-v8a/libnative-lib.so",
+			"toolchain" : "11120576145613514786"
+		}
+	},
+	"toolchains" : 
+	{
+		"11120576145613514786" : 
+		{
+			"cCompilerExecutable" : "/Users/bailey/Android/android-ndk-r15b/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/Users/bailey/Android/android-ndk-r15b/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+		}
+	}
+}
