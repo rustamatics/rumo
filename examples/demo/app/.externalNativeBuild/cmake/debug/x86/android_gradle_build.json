@@ -1,9 +1,9 @@
 
 {
-	"buildFiles" : [ "/Users/bailey/Developer/work/droid/examples/demo/app/CMakeLists.txt" ],
+	"buildFiles" : [ "/home/bailey/Developer/work/droid/examples/demo/app/CMakeLists.txt" ],
 	"cleanCommands" : 
 	[
-		"/Users/bailey/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/bailey/Developer/work/droid/examples/demo/app/.externalNativeBuild/cmake/debug/x86 --target clean"
+		"/home/bailey/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/bailey/Developer/work/droid/examples/demo/app/.externalNativeBuild/cmake/debug/x86 --target clean"
 	],
 	"cppFileExtensions" : [ "cpp" ],
 	"libraries" : 
@@ -12,27 +12,27 @@
 		{
 			"abi" : "x86",
 			"artifactName" : "native-lib",
-			"buildCommand" : "/Users/bailey/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/bailey/Developer/work/droid/examples/demo/app/.externalNativeBuild/cmake/debug/x86 --target native-lib",
+			"buildCommand" : "/home/bailey/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/bailey/Developer/work/droid/examples/demo/app/.externalNativeBuild/cmake/debug/x86 --target native-lib",
 			"buildType" : "debug",
 			"files" : 
 			[
 				
 				{
-					"flags" : "  --target=i686-none-linux-android --gcc-toolchain=/Users/bailey/Android/android-ndk-r15b/toolchains/x86-4.9/prebuilt/darwin-x86_64 --sysroot=/Users/bailey/Android/android-ndk-r15b/sysroot  -Dnative_lib_EXPORTS -isystem /Users/bailey/Android/android-ndk-r15b/sources/cxx-stl/gnu-libstdc++/4.9/include -isystem /Users/bailey/Android/android-ndk-r15b/sources/cxx-stl/gnu-libstdc++/4.9/libs/x86/include -isystem /Users/bailey/Android/android-ndk-r15b/sources/cxx-stl/gnu-libstdc++/4.9/include/backward  -isystem /Users/bailey/Android/android-ndk-r15b/sysroot/usr/include/i686-linux-android -D__ANDROID_API__=15 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security  -std=c++11 -O0 -fno-limit-debug-info  -fPIC    -c ",
-					"src" : "/Users/bailey/Developer/work/droid/examples/demo/app/src/main/cpp/native-lib.cpp",
-					"workingDirectory" : "/Users/bailey/Developer/work/droid/examples/demo/app/.externalNativeBuild/cmake/debug/x86"
+					"flags" : "  --target=i686-none-linux-android --gcc-toolchain=/home/bailey/Android/android-ndk-r15b/toolchains/x86-4.9/prebuilt/linux-x86_64 --sysroot=/home/bailey/Android/android-ndk-r15b/sysroot  -Dnative_lib_EXPORTS -isystem /home/bailey/Android/android-ndk-r15b/sources/cxx-stl/gnu-libstdc++/4.9/include -isystem /home/bailey/Android/android-ndk-r15b/sources/cxx-stl/gnu-libstdc++/4.9/libs/x86/include -isystem /home/bailey/Android/android-ndk-r15b/sources/cxx-stl/gnu-libstdc++/4.9/include/backward  -isystem /home/bailey/Android/android-ndk-r15b/sysroot/usr/include/i686-linux-android -D__ANDROID_API__=15 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security  -std=c++11 -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "/home/bailey/Developer/work/droid/examples/demo/app/src/main/cpp/native-lib.cpp",
+					"workingDirectory" : "/home/bailey/Developer/work/droid/examples/demo/app/.externalNativeBuild/cmake/debug/x86"
 				}
 			],
-			"output" : "/Users/bailey/Developer/work/droid/examples/demo/app/build/intermediates/cmake/debug/obj/x86/libnative-lib.so",
-			"toolchain" : "11120576145613514786"
+			"output" : "/home/bailey/Developer/work/droid/examples/demo/app/build/intermediates/cmake/debug/obj/x86/libnative-lib.so",
+			"toolchain" : "7074804249552940658"
 		}
 	},
 	"toolchains" : 
 	{
-		"11120576145613514786" : 
+		"7074804249552940658" : 
 		{
-			"cCompilerExecutable" : "/Users/bailey/Android/android-ndk-r15b/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang",
-			"cppCompilerExecutable" : "/Users/bailey/Android/android-ndk-r15b/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+			"cCompilerExecutable" : "/home/bailey/Android/android-ndk-r15b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/home/bailey/Android/android-ndk-r15b/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++"
 		}
 	}
 }

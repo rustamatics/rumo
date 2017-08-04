@@ -5,12 +5,24 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
+# Define RUST_APP_ROOT for target cross compilation.
+# Value pulled from Environment with a fallback
+if (DEFINED ENV{RUST_APP_ROOT})
+  set( RUST_APP_ROOT "$ENV{RUST_APP_ROOT}" )
+else()
+  set( RUST_APP_REL_DIR "${CMAKE_BINARY_DIR}/../../../../src/main/rust" )
+  execute_process(
+    COMMAND bash -c "cd ${RUST_APP_REL_DIR} && pwd" OUTPUT_VARIABLE RUST_APP_ROOT)
+endif()
+
+MESSAGE ( STATUS "\nRUST_APP_ROOT: " ${RUST_APP_ROOT} )
+MESSAGE ( STATUS "ANDROID_ABI: " ${ANDROID_ABI} )
+
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
-MESSAGE ( STATUS "\nANDROID_ABI: " ${ANDROID_ABI} )
 
 add_library( # Sets the name of the library.
              native-lib

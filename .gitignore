@@ -2,4 +2,5 @@
 /examples/*/target
 **/*.rs.bk
 *.#*
+**/build/android-profile
 
