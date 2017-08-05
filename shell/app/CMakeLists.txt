@@ -27,6 +27,12 @@ else()
   set( RUST_APP_ROOT "${CMAKE_BINARY_DIR}/../../../../src/main/rust" )
 endif()
 
+if (DEFINED ENV{RUST_APP_NAME})
+  set( RUST_APP_NAME "$ENV{RUST_APP_NAME}" )
+else()
+  set( RUST_APP_NAME rust_app )
+endif()
+
 if (ANDROID_ABI STREQUAL "x86_64")
   set(RUST_ARCH x86_64-unknown-linux-gnu)
 elseif(ANDROID_ABI STREQUAL "armv7a")
@@ -37,14 +43,14 @@ elseif(ANDROID_ABI STREQUAL "mips")
   set(RUST_ARCH mips-unknown-linux-gnu)
 endif()
 
-set(RUST_APP_NAME rust_app)
 set(RUST_APP_LIB
   "${RUST_APP_ROOT}/target/${RUST_ARCH}/release/lib${RUST_APP_NAME}.so")
 
+MESSAGE ( STATUS "ANDROID_ABI: "   ${ANDROID_ABI} )
 MESSAGE ( STATUS "RUST_APP_ROOT: " ${RUST_APP_ROOT} )
-MESSAGE ( STATUS "RUST_APP_LIB: " ${RUST_APP_LIB} )
-MESSAGE ( STATUS "RUST_ARCH: " ${RUST_ARCH} )
-MESSAGE ( STATUS "ANDROID_ABI: " ${ANDROID_ABI} )
+MESSAGE ( STATUS "RUST_APP_NAME: " ${RUST_APP_NAME} )
+MESSAGE ( STATUS "RUST_APP_LIB: "  ${RUST_APP_LIB} )
+MESSAGE ( STATUS "RUST_ARCH: "     ${RUST_ARCH} )
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
