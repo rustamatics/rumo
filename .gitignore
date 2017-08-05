@@ -1,4 +1,5 @@
 /target/
+**/target
 /examples/**/target
 **/*.rs.bk
 *.#*
