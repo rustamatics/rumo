@@ -10,7 +10,6 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
-
 add_library( # Sets the name of the library.
              native-lib
 
@@ -28,14 +27,23 @@ else()
   set( RUST_APP_ROOT "${CMAKE_BINARY_DIR}/../../../../src/main/rust" )
 endif()
 
+if (ANDROID_ABI STREQUAL "x86_64")
+  set(RUST_ARCH x86_64-unknown-linux-gnu)
+elseif(ANDROID_ABI STREQUAL "armv7a")
+  set(RUST_ARCH armv7-unknown-androideabi)
+elseif(ANDROID_ABI STREQUAL "arm")
+  set(RUST_ARCH arm-linux-androideabi)
+elseif(ANDROID_ABI STREQUAL "mips")
+  set(RUST_ARCH mips-unknown-linux-gnu)
+endif()
 
-set(NATIVE_TARGET x86_64-unknown-linux-gnu)
-
-set( RUST_APP_LIB
-  "${RUST_APP_ROOT}/target/${NATIVE_TARGET}/release/librust_app.so" )
+set(RUST_APP_NAME rust_app)
+set(RUST_APP_LIB
+  "${RUST_APP_ROOT}/target/${RUST_ARCH}/release/lib${RUST_APP_NAME}.so")
 
 MESSAGE ( STATUS "RUST_APP_ROOT: " ${RUST_APP_ROOT} )
 MESSAGE ( STATUS "RUST_APP_LIB: " ${RUST_APP_LIB} )
+MESSAGE ( STATUS "RUST_ARCH: " ${RUST_ARCH} )
 MESSAGE ( STATUS "ANDROID_ABI: " ${ANDROID_ABI} )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -44,11 +52,7 @@ MESSAGE ( STATUS "ANDROID_ABI: " ${ANDROID_ABI} )
 # you want to add. CMake verifies that the library exists before
 # completing its build.
 
-find_library( # Sets the name of the path variable.
-  log-lib
-  # Specifies the name of the NDK library that
-  # you want CMake to locate.
-  log )
+find_library(log-lib log)
 
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
