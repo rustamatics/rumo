@@ -1,6 +1,8 @@
 /target/
-/examples/*/target
+/examples/**/target
 **/*.rs.bk
 *.#*
 **/build/android-profile
+.externalNativeBuild
+build
 
