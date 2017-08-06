@@ -14,5 +14,7 @@ else
 fi
 
 # $ROOT/gradlew clean && \
+RUST_APP_NAME=hello \
+RUST_APP_ROOT=$ROOT/../examples/hello \
 $ROOT/gradlew build $@
 
