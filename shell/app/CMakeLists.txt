@@ -41,16 +41,25 @@ elseif(ANDROID_ABI STREQUAL "armeabi")
   set(RUST_ARCH arm-linux-androideabi)
 elseif(ANDROID_ABI STREQUAL "mips")
   set(RUST_ARCH mips-unknown-linux-gnu)
+else()
+  # MESSAGE ( FATAL_ERROR "ANDROID_ABI not supported: ${ANDROID_ABI}" )
+  set(RUST_ARCH x86_64-unknown-linux-gnu)
 endif()
 
 set(RUST_APP_LIB
   "${RUST_APP_ROOT}/target/${RUST_ARCH}/release/lib${RUST_APP_NAME}.so")
 
+if( EXISTS ${RUST_APP_LIB} )
+  # OK
+else()
+  MESSAGE(FATAL_ERROR "RUST_APP_LIB:${RUST_APP_LIB} not found")
+endif()
+
 MESSAGE ( STATUS "ANDROID_ABI: "   ${ANDROID_ABI} )
+MESSAGE ( STATUS "RUST_ARCH: "     ${RUST_ARCH} )
 MESSAGE ( STATUS "RUST_APP_ROOT: " ${RUST_APP_ROOT} )
 MESSAGE ( STATUS "RUST_APP_NAME: " ${RUST_APP_NAME} )
 MESSAGE ( STATUS "RUST_APP_LIB: "  ${RUST_APP_LIB} )
-MESSAGE ( STATUS "RUST_ARCH: "     ${RUST_ARCH} )
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -72,7 +81,8 @@ target_link_libraries( # Specifies the target library.
 
   # Links the target library to the log library
   # included in the NDK.
-  ${log-lib} )
+  # ${log-lib}
+  )
 
 
 set_target_properties(

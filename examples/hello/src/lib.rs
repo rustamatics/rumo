@@ -1,13 +1,8 @@
-#[no_std]
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-    }
-}
+// #![no_std]
 
 #[no_mangle]
-pub extern fn execute()  {
-    print!("hello!")
+pub extern "C" fn entry_point()  -> i32 {
+    // print!("hello!");
+    format!("hello from entry_point");
+    1
 }
