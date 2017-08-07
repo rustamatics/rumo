@@ -1,0 +1,13 @@
+#include <jni.h>
+#include <string.h>
+#include <stdint.h>
+
+int32_t entry_point();
+
+JNIEXPORT jstring JNICALL
+Java_com_example_hellojni_HelloJni_stringFromJNI( JNIEnv* env,
+                                                      jobject thiz )
+{
+  entry_point();
+  return (*env)->NewStringUTF(env, "Hello from JNI !");
+}

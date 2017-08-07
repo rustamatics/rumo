@@ -4,7 +4,7 @@ add_executable( # Sets the name of the library.
              cmake-example
 
              # Provides a relative path to your source file(s).
-             src/cmake-example.cpp )
+             src/cmake-example.c )
 
 set(RUST_ARCH x86_64-unknown-linux-gnu)
 
@@ -19,11 +19,7 @@ if( NOT EXISTS ${RUST_APP_LIB} )
 endif()
 
 
-target_link_libraries( # Specifies the target library.
-  cmake-example
+target_link_libraries(cmake-example
+  ${RUST_APP_LIB}
   ${MINI_LIB}
 )
-# ${RUST_APP_LIB}
-
-# set_target_properties(
-  # cmake-example PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON)

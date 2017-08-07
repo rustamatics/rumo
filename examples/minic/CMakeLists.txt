@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.4.1)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 add_library( # Sets the name of the library.
              mini

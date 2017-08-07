@@ -3,6 +3,6 @@
 #[no_mangle]
 pub extern "C" fn entry_point()  -> i32 {
     // print!("hello!");
-    format!("hello from entry_point");
-    1
+    println!("hello from entry_point: {}%", 100);
+    33
 }
