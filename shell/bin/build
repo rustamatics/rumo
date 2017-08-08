@@ -1,0 +1,51 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ROOT="$( cd $DIR/../ && pwd)"
+
+external_build=$ROOT/app/.externalNativeBuild
+
+if [ -d $external_build ]; then
+  echo "Clearing External Build Cache"
+  rm -rf $external_build;
+fi
+
+if [[ "$RUST_APP_NAME" == "" ]]; then
+  RUST_APP_NAME=hello
+fi
+
+if [[ "$RUST_APP_ROOT" == "" ]]; then
+  RUST_APP_ROOT=$(cd $ROOT/../examples/hello && pwd)
+fi
+
+echo "RUST_APP_NAME: $RUST_APP_NAME"
+echo "RUST_APP_ROOT: $RUST_APP_ROOT"
+echo
+sleep 0.5
+function build() {
+  # Lookup the expanded triple form
+  triple_target=$1
+  target=$2
+  build_type=$3
+
+  cd $RUST_APP_ROOT;
+  cargo build --release --target=$triple_target
+
+  if [ $? -eq 0 ]; then
+    install_dir=$ROOT/app/libs/$target
+    output_dir=$RUST_APP_ROOT/target/$triple_target/$build_type
+    mkdir -p $install_dir
+    cp $output_dir/lib$RUST_APP_NAME.so $install_dir/
+  else
+    echo -e "\nCargo build failed"
+    exit 1;
+  fi
+}
+
+build x86_64-linux-android x86_64 release
+cd $ROOT
+
+RUST_APP_NAME=$RUST_APP_NAME \
+RUST_APP_ROOT=$RUST_APP_ROOT \
+  $ROOT/gradlew build $@
+
