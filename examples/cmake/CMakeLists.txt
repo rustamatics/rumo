@@ -4,7 +4,7 @@ add_executable( # Sets the name of the library.
              cmake-example
 
              # Provides a relative path to your source file(s).
-             src/cmake-example.c )
+             src/cmake-example.cpp )
 
 set(RUST_ARCH x86_64-unknown-linux-gnu)
 

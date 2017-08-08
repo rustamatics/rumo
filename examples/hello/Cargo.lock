@@ -1,4 +1,14 @@
 [root]
 name = "hello"
 version = "0.1.0"
+dependencies = [
+ "android_ffi 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
+[[package]]
+name = "android_ffi"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[metadata]
+"checksum android_ffi 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "8cba15211ad61eee72471d5c9478bc9749549b2249080fb2433cebaa863b702a"

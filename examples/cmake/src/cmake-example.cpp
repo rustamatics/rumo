@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdint.h>
 
-extern int mini_entry(void);
-extern int32_t entry_point(void);
+extern "C" {
+  int mini_entry(void);
+  int32_t entry_point(void);
+}
 
 int main() {
   mini_entry();
