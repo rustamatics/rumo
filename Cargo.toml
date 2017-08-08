@@ -1,10 +1,10 @@
 [package]
-name = "droid"
+name = "kinito"
 version = "0.1.0"
 authors = ["Bailey Cosier <bailey.cosier@gmail.com>"]
 license = "MIT"
-description = "Cargo subcommand providing Android build support and automation"
-repository = "https://github.com/cosier/cargo-droid"
+description = "Alpha WIP: Mobile framework & build tools for Android / iOS"
+repository = "https://github.com/openkinito/kinito"
 
 build = "build.rs"
 

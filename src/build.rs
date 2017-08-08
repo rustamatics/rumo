@@ -306,7 +306,6 @@ fn build_android_artifacts_dir(path: &Path, config: &Config) {
         ffi.write_all(&include_bytes!("../injected-glue/ffi.rs")[..]).unwrap();
     }
 
-    build_linker(path);
     build_manifest(path, config);
     build_build_xml(path, config);
     build_local_properties(path, config);
@@ -319,25 +318,6 @@ fn build_android_artifacts_dir(path: &Path, config: &Config) {
             fs::DirBuilder::new().recursive(true).create(path.join(target)).unwrap();
         }
     }
-}
-
-fn build_linker(path: &Path) {
-    let exe_file = path.join(if cfg!(target_os = "windows") { "linker_exe.exe" } else { "linker_exe" });
-    let src_file = path.join("linker_src");
-
-    /*if fs::metadata(&exe_file).is_ok() {
-        return;
-    }*/
-
-    {
-        let mut src_write = fs::File::create(&src_file).unwrap();
-        src_write.write_all(&include_bytes!("../linker.rs")[..]).unwrap();
-    }
-
-    let status = Command::new("rustc").arg(src_file).arg("-o").arg(&exe_file).status().unwrap();
-    assert!(status.success());
-
-    assert!(fs::metadata(&exe_file).is_ok());
 }
 
 fn build_java_src(path: &Path, config: &Config, abi_libs: &HashMap<&str, Vec<String>>)
