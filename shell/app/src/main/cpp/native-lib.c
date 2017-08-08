@@ -5,7 +5,7 @@
 int32_t entry_point();
 
 JNIEXPORT jstring JNICALL
-Java_com_example_hellojni_HelloJni_stringFromJNI( JNIEnv* env,
+Java_com_droid_simple_MainActivity_stringFromJNI( JNIEnv* env,
                                                       jobject thiz )
 {
   entry_point();
