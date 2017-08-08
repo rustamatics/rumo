@@ -1,11 +1,10 @@
-# Cargo Android
+# Kinito
 
-Extends the cargo build tool with Android Support and build automation.
-The goal is to provide easy Android integration for your existing Rust projects.
+Crossplatform Mobile build support and automation for Rust based Apps — Supporting Android / iOS 
 
 ## Installing
 
-cargo install cargo-android
+cargo install kinito
 
 ```
 Todo: Examples
