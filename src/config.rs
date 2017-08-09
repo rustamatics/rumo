@@ -38,8 +38,8 @@ pub struct Config {
     pub sdk_path: PathBuf,
     /// Path to the root of the Android NDK.
     pub ndk_path: PathBuf,
-    /// How to invoke `ant`.
-    pub ant_command: String,
+
+    pub project_path: PathBuf,
 
     /// Name that the package will have on the Android machine.
     /// This is the key that Android uses to identify your package, so it should be unique for
@@ -48,6 +48,7 @@ pub struct Config {
     /// Name of the project to feed to the SDK. This will be the name of the APK file.
     /// Should be a "system-ish" name, like `my-project`.
     pub project_name: String,
+
     /// Label for the package.
     pub package_label: String,
 
@@ -94,6 +95,12 @@ pub struct Config {
     pub opengles_version_minor: u8,
 }
 
+impl Config {
+    pub fn project_path_str(&self) -> &str {
+        self.project_path.to_str().unwrap()
+    }
+}
+
 pub fn load(manifest_path: &Path) -> Config {
     // Determine the name of the package and the Android-specific metadata from the Cargo.toml
     let (package_name, manifest_content) = {
@@ -130,7 +137,7 @@ pub fn load(manifest_path: &Path) -> Config {
     Config {
         sdk_path: Path::new(&sdk_path).to_owned(),
         ndk_path: Path::new(&ndk_path).to_owned(),
-        ant_command: if cfg!(target_os = "windows") { "ant.bat" } else { "ant" }.to_owned(),
+        project_path: Path::new(manifest_path).to_owned(),
         package_name: manifest_content.as_ref().and_then(|a| a.package_name.clone())
                                        .unwrap_or_else(|| format!("rust.{}", package_name)),
         project_name: package_name.clone(),

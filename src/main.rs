@@ -10,19 +10,17 @@ extern crate serde_json;
 extern crate term;
 extern crate toml;
 extern crate clap;
+extern crate zip;
 
 use std::path::Path;
 use std::path::PathBuf;
-use std::process::Command;
-
+use std::process::{Command, exit};
 use clap::{Arg, App, SubCommand};
 
-// mod build;
-// mod install;
 pub mod config;
-mod setup;
-mod termcmd;
-mod utils;
+pub mod shell;
+pub mod termcmd;
+pub mod utils;
 
 use utils::{lnbreak};
 
@@ -81,11 +79,17 @@ fn main() {
     let mut config = config::load(&current_manifest);
     config.release = matches.is_present("release");
 
-    if let Some(_) = matches.subcommand_matches("setup") {
-        setup::embed(&current_manifest, &config);
+    // Provide a way to clean the shell
+    if let Some(_) = matches.subcommand_matches("clean") {
+        shell::clean(&config);
+        exit(0);
     }
 
-    else if let Some(_) = matches.subcommand_matches("build") {
+    // Always check to see if we have the project shell embedded
+    // Noticeably, this is done after clean has a chance to run.
+    shell::embed_if_not_present(&config);
+
+    if let Some(_) = matches.subcommand_matches("build") {
         // build::build(&current_manifest, &config);
         println!("Todo: Implment auto build via gradle!")
     }

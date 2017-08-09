@@ -9,7 +9,9 @@ use std::path::Path;
 use std::fs::File;
 
 fn main() {
-    zip_it("./shell", "target/shell.zip").unwrap();
+    if ! Path::new("target/shell.zip").exists() {
+        zip_it("./shell", "target/shell.zip").unwrap();
+    }
 }
 
 fn zip_it(src_dir: &str, dst_file: &str) -> zip::result::ZipResult<()> {
