@@ -17,9 +17,10 @@ use std::process::Command;
 
 use clap::{Arg, App, SubCommand};
 
-mod build;
-mod config;
-mod install;
+// mod build;
+// mod install;
+pub mod config;
+mod setup;
 mod termcmd;
 mod utils;
 
@@ -46,7 +47,7 @@ fn main() {
     const VERSION: Option<&'static str> = option_env!("CARGO_PKG_VERSION");
     const DESC: Option<&'static str> = option_env!("CARGO_PKG_DESCRIPTION");
 
-    let mut app = App::new("Cargo Android")
+    let mut app = App::new("Kinito")
         .version(VERSION.unwrap_or("unknown"))
         .about(DESC.unwrap_or("--"))
 
@@ -59,10 +60,8 @@ fn main() {
              .long("release")
              .help("Trigger release build optimizations"))
 
-        .arg(Arg::with_name("target")
-             .long("target")
-             .help("Specify target from multiple [[bin]] in Cargo.toml")
-             .takes_value(true))
+        .subcommand(SubCommand::with_name("setup")
+                    .help("Setup shell application for embedding rust\n"))
 
         .subcommand(SubCommand::with_name("build")
              .help("Compile Project into a APK\n"))
@@ -82,17 +81,18 @@ fn main() {
     let mut config = config::load(&current_manifest);
     config.release = matches.is_present("release");
 
-    // Rewrap optional provided target from str to owned String
-    if let Some(target) = matches.value_of("target") {
-        config.target = Some(target.to_owned());
+    if let Some(_) = matches.subcommand_matches("setup") {
+        setup::embed(&current_manifest, &config);
     }
 
-    if let Some(_) = matches.subcommand_matches("build") {
-        build::build(&current_manifest, &config);
+    else if let Some(_) = matches.subcommand_matches("build") {
+        // build::build(&current_manifest, &config);
+        println!("Todo: Implment auto build via gradle!")
     }
 
     else if let Some(_) = matches.subcommand_matches("install") {
-        install::install(&current_manifest, &config);
+        // install::install(&current_manifest, &config);
+        println!("Todo: Implment auto apk installer!")
     }
 
     // If we have not matched any sub command at this point,

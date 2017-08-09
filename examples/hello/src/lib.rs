@@ -19,8 +19,7 @@ impl android_ffi::SyncEventHandler for EventHandler {
 }
 
 fn main(_: isize, _: *const *const u8) {
-    android_ffi::write_log("hello::main has been called!");
     let handler = Box::from(EventHandler{});
-
+    android_ffi::write_log("hello::main has been called!");
     android_ffi::add_sync_event_handler(handler);
 }
