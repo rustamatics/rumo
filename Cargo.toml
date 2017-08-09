@@ -12,6 +12,9 @@ build = "build.rs"
 zip = "0.2.5"
 
 [dependencies]
+android_ffi = "^0.1.0"
+android_support = "^0.1.0"
+
 clap = "^2.25.1"
 toml = "0.4.2"
 term = "0.4.6"
@@ -22,3 +25,5 @@ env_logger = "0.4.3"
 serde = "^1.0.10"
 serde_derive = "^1.0.10"
 serde_json = "^1.0.2"
+
+

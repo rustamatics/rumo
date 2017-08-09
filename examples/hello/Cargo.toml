@@ -9,6 +9,9 @@ crate-type = ["dylib"]
 [dependencies]
 android_ffi = "^0.1.0"
 
+[dependencies.kinito]
+path = "../../"
+
 [package.metadata.android]
 
 # The Java package name for your application.
