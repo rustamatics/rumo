@@ -16,8 +16,10 @@ pub fn lnbreak() {
 }
 
 pub fn unzip_shell(shell_dst: String) -> bool {
+    println!("unzip_shell -> shell_dst: {}", shell_dst);
     let fname = std::path::Path::new(&shell_dst[..]);
     let file = fs::File::open(&fname).unwrap();
+
 
     let mut archive = zip::ZipArchive::new(file).unwrap();
 

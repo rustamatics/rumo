@@ -89,6 +89,9 @@ fn main() {
     // Noticeably, this is done after clean has a chance to run.
     shell::embed_if_not_present(&config);
 
+    println!("project_path: {}", config.project_path_str());
+    exit(1);
+
     if let Some(_) = matches.subcommand_matches("build") {
         // build::build(&current_manifest, &config);
         println!("Todo: Implment auto build via gradle!")

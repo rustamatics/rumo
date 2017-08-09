@@ -132,12 +132,14 @@ pub fn load(manifest_path: &Path) -> Config {
                     the $ANDROID_HOME environment variable.")
     };
 
+    let manifest_parent = str::replace(&manifest_path.to_str().unwrap()[..], "/Cargo.toml", "");
+    let project_path =  Path::new(&manifest_parent[..]).to_owned();
 
     // For the moment some fields of the config are dummies.
     Config {
         sdk_path: Path::new(&sdk_path).to_owned(),
         ndk_path: Path::new(&ndk_path).to_owned(),
-        project_path: Path::new(manifest_path).to_owned(),
+        project_path: project_path,
         package_name: manifest_content.as_ref().and_then(|a| a.package_name.clone())
                                        .unwrap_or_else(|| format!("rust.{}", package_name)),
         project_name: package_name.clone(),

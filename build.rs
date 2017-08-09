@@ -9,8 +9,8 @@ use std::path::Path;
 use std::fs::File;
 
 fn main() {
-    if ! Path::new("target/shell.zip").exists() {
-        zip_it("./shell", "target/shell.zip").unwrap();
+    if ! Path::new("target/android-shell.zip").exists() {
+        zip_it("./shell", "target/android-shell.zip").unwrap();
     }
 }
 

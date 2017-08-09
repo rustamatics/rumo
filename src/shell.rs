@@ -4,14 +4,14 @@ use config::Config;
 use utils::unzip_shell;
 use std::process::exit;
 
-pub const SHELL_ZIP: &'static [u8] = include_bytes!("../target/shell.zip");
+pub const SHELL_ZIP: &'static [u8] = include_bytes!("../target/android-shell.zip");
 
 /// Checks to see if <project>/target/android-shell directory exists,
 /// if not then the zip is unloaded upon the <project>/target directory
 pub fn embed_if_not_present(config: &Config) {
     let project_path = config.project_path_str();
     if ! android_shell_exists(project_path) {
-        if unzip_shell(android_shell_dir(project_path)) {
+        if unzip_shell(android_shell_zip(project_path)) {
             println!("Extracted Android Shell successfully");
         } else {
             error!("Unable to extract android shell to: {}", project_path);
@@ -39,4 +39,8 @@ fn android_shell_exists(project_path: &str) -> bool {
 
 fn android_shell_dir(project_path: &str) -> String {
     format!("{}/target/android-shell", project_path)
+}
+
+fn android_shell_zip(project_path: &str) -> String {
+    format!("{}/target/android-shell.zip", project_path)
 }
