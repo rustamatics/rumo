@@ -1,0 +1,56 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ROOT="$( cd $DIR/../ && pwd)"
+CL_GREEN=$(tput setaf 2)
+CL_CYAN=$(tput setaf 6)
+CL_RED=$(tput setaf 1)
+CL_NC=$(tput sgr0) # No Color
+
+if [[ "$RUST_APP_NAME" == "" ]]; then
+  echo "RUST_APP_NAME is undefined"
+  exit 1
+fi
+
+if [[ "$RUST_APP_ROOT" == "" ]]; then
+  echo "RUST_APP_ROOT is undefined"
+  exit 1
+fi
+
+function build() {
+  # Lookup the expanded triple form
+  triple_target=$1
+  target=$2
+  build_type=$3
+
+  cd $RUST_APP_ROOT;
+  cargo build --release --target=$triple_target
+
+  if [ $? -eq 0 ]; then
+    install_dir=$ROOT/app/libs/$target
+    output_dir=$RUST_APP_ROOT/target/$triple_target/$build_type
+    mkdir -p $install_dir
+    cp $output_dir/lib$RUST_APP_NAME.so $install_dir/
+  else
+    echo -e "\nCargo build failed"
+    exit 1;
+  fi
+}
+
+build x86_64-linux-android x86_64 release
+cd $ROOT
+
+RUST_APP_NAME=$RUST_APP_NAME \
+RUST_APP_ROOT=$RUST_APP_ROOT \
+  $ROOT/gradlew build $@
+
+if [ $? -eq 0 ]; then
+  APK_DIR=$RUST_APP_ROOT/target/apk
+  mkdir -p $APK_DIR
+  cp $RUST_APP_ROOT/target/android-shell/app/build/outputs/apk/* $APK_DIR/
+  apk_list=$(ls -1 $APK_DIR)
+
+  echo -e "${CL_CYAN}${apk_list}${CL_NC}"
+  echo -e "${CL_GREEN}APK(s) Copied to: $APK_DIR${CL_NC}"
+fi
+
