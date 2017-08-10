@@ -1,6 +1,6 @@
 [package]
 name = "kinito"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Bailey Cosier <bailey.cosier@gmail.com>"]
 license = "MIT"
 description = "[Alpha] Mobile framework & build tools for Android / iOS"
