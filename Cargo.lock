@@ -1,11 +1,12 @@
 [root]
 name = "kinito"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "android_ffi 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "android_support 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "clap 2.25.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "env_logger 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.28 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.3.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_derive 1.0.10 (registry+https://github.com/rust-lang/crates.io-index)",

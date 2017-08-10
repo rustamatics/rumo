@@ -1,6 +1,6 @@
 [package]
 name = "kinito"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Bailey Cosier <bailey.cosier@gmail.com>"]
 license = "MIT"
 description = "[Alpha] Mobile framework & build tools for Android / iOS"
@@ -9,6 +9,7 @@ repository = "https://github.com/openkinito/kinito"
 build = "build.rs"
 
 [build-dependencies]
+libc = "0.2.28"
 zip = "0.2.5"
 walkdir = "1.0.7"
 

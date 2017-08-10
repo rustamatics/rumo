@@ -7,10 +7,18 @@ use zip::write::FileOptions;
 use walkdir::WalkDir;
 use std::path::Path;
 use std::fs::File;
+use std::env::current_dir;
 
 fn main() {
+    let cargo_manifest_dir = option_env!("CARGO_MANIFEST_DIR").unwrap();
+    println!("CARGO_MANIFEST_DIR: {}\nCWD:{:?}", cargo_manifest_dir, current_dir().unwrap());
+
     if ! Path::new("target/android-shell.zip").exists() {
-        zip_it("./turtles/android-shell", "target/android-shell.zip").unwrap();
+        if ! Path::new("turtles/android-shell").exists() {
+           panic!("Could not locate turtles/android-shell");
+        } else {
+            zip_it("./turtles/android-shell", "target/android-shell.zip").unwrap();
+        }
     }
 }
 
