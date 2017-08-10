@@ -8,6 +8,4 @@ crate-type = ["dylib"]
 
 [dependencies]
 android_ffi = "^0.1.0"
-
-[dependencies.kinito]
-path = "../../"
+# kinito = "^0.1.3"

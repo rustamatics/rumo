@@ -11,7 +11,8 @@ use std::env::current_dir;
 
 fn main() {
     let cargo_manifest_dir = option_env!("CARGO_MANIFEST_DIR").unwrap();
-    println!("CARGO_MANIFEST_DIR: {}\nCWD:{:?}", cargo_manifest_dir, current_dir().unwrap());
+    println!("CARGO_MANIFEST_DIR: {}", cargo_manifest_dir);
+    println!("CWD: {:?}", current_dir().unwrap());
 
     if ! Path::new("target/android-shell.zip").exists() {
         if ! Path::new("turtles/android-shell").exists() {
