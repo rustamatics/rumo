@@ -45,6 +45,7 @@ pub struct Config {
     /// This is the key that Android uses to identify your package, so it should be unique for
     /// for each application and should contain the vendor's name.
     pub package_name: String,
+    pub package_name_sanitized: String,
     /// Name of the project to feed to the SDK. This will be the name of the APK file.
     /// Should be a "system-ish" name, like `my-project`.
     pub project_name: String,
@@ -135,6 +136,10 @@ pub fn load(manifest_path: &Path) -> Config {
     let manifest_parent = str::replace(&manifest_path.to_str().unwrap()[..], "/Cargo.toml", "");
     let project_path =  Path::new(&manifest_parent[..]).to_owned();
 
+
+    let n = &package_name.clone()[..];
+    let package_name_sanitized = str::replace(&str::replace(n, "-", "_")[..], "rust.", "");
+
     // For the moment some fields of the config are dummies.
     Config {
         sdk_path: Path::new(&sdk_path).to_owned(),
@@ -143,6 +148,7 @@ pub fn load(manifest_path: &Path) -> Config {
         package_name: manifest_content.as_ref().and_then(|a| a.package_name.clone())
                                        .unwrap_or_else(|| format!("rust.{}", package_name)),
         project_name: package_name.clone(),
+        package_name_sanitized: package_name_sanitized.clone(),
         package_label: manifest_content.as_ref().and_then(|a| a.label.clone())
                                        .unwrap_or_else(|| package_name.clone()),
         package_icon: manifest_content.as_ref().and_then(|a| a.icon.clone()),

@@ -3,19 +3,6 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT="$( cd $DIR/../ && pwd)"
 
-# $ROOT/gradlew clean && \
-if [[ "$RUST_APP_NAME" == "" ]]; then
-  RUST_APP_NAME=hello
-fi
-
-if [[ "$RUST_APP_ROOT" == "" ]]; then
-  RUST_APP_ROOT=$(cd $ROOT/../examples/hello && pwd)
-fi
-
-echo "RUST_APP_NAME: $RUST_APP_NAME"
-echo "RUST_APP_ROOT: $RUST_APP_ROOT"
-sleep 0.5
-
 cd $ROOT
 RUST_APP_NAME=$RUST_APP_NAME \
 RUST_APP_ROOT=$RUST_APP_ROOT \
