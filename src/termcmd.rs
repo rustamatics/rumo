@@ -71,10 +71,10 @@ impl TermCmd {
         if let Some(ref mut t) = t {
             let _ = t.fg(term::color::BRIGHT_GREEN);
             let _ = t.attr(term::Attr::Bold);
-            writeln!(t, "  Cargo-Apk: {}", self.label).unwrap();
+            writeln!(t, "  kinito: {}", self.label).unwrap();
             t.reset().unwrap();
         } else {
-            println!("  Cargo-Apk: {}", self.label);
+            println!("  kinito: {}", self.label);
         }
 
         let output = self.command.output();
@@ -99,9 +99,9 @@ impl TermCmd {
 
             if let Ok(ref output) = output {
                 if !self.inherit_stdouterr {
-                    writeln!(t, "Stdout\n--------------------").unwrap();
+                    // writeln!(t, "Stdout\n--------------------").unwrap();
                     t.write_all(&output.stdout).unwrap();
-                    writeln!(t, "Stderr\n--------------------").unwrap();
+                    // writeln!(t, "Stderr\n--------------------").unwrap();
                     t.write_all(&output.stderr).unwrap();
                 }
             }
@@ -115,9 +115,9 @@ impl TermCmd {
             }
             if let Ok(ref output) = output {
                 if !self.inherit_stdouterr {
-                    println!("Stdout\n--------------------");
+                    // println!("Stdout\n--------------------");
                     io::stdout().write_all(&output.stdout).unwrap();
-                    println!("Stderr\n--------------------");
+                    // println!("Stderr\n--------------------");
                     io::stdout().write_all(&output.stderr).unwrap();
                 }
             }

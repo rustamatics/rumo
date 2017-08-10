@@ -14,15 +14,14 @@ extern crate zip;
 
 use std::path::Path;
 use std::path::PathBuf;
-use std::process::{Command, exit};
+use std::process::{Command};
 use clap::{Arg, App, SubCommand};
 
 pub mod config;
 pub mod shell;
 pub mod termcmd;
 pub mod utils;
-
-use utils::{lnbreak};
+pub mod commands;
 
 #[derive(Debug)]
 enum ManifestLoadError {
@@ -39,9 +38,6 @@ fn main() {
         error!("Failed to initialise environment logger because {}", e);
     }
 
-    // Visual line break for debug mode
-    lnbreak();
-
     const VERSION: Option<&'static str> = option_env!("CARGO_PKG_VERSION");
     const DESC: Option<&'static str> = option_env!("CARGO_PKG_DESCRIPTION");
 
@@ -52,54 +48,46 @@ fn main() {
         .arg(Arg::with_name("project-dir")
              .long("project-dir")
              .short("d")
+             .help("Override the default project directory provided by `cargo locate-project`")
              .takes_value(true))
 
         .arg(Arg::with_name("release")
              .long("release")
-             .help("Trigger release build optimizations"))
+             .help("Build with cargo `release` mode optimizations"))
 
-        .subcommand(SubCommand::with_name("setup")
-                    .help("Setup shell application for embedding rust\n"))
+        .arg(Arg::with_name("clean")
+             .long("clean")
+             .help("Clean build artifacts for a fresh compilation"))
 
         .subcommand(SubCommand::with_name("build")
              .help("Compile Project into a APK\n"))
 
-        .subcommand(SubCommand::with_name("install")
+        .subcommand(SubCommand::with_name("device-install")
              .help("Install Android APK onto Device\n"));
 
     let matches = app.clone().get_matches();
-    let current_manifest: PathBuf = match matches.value_of("project-dir") {
-        Some(p) => PathBuf::from(p),
-        None => { current_manifest_path().unwrap() }
-    };
-
-    debug!("manifest file: {:?}", current_manifest);
 
     // Fetching the configuration for the build.
-    let mut config = config::load(&current_manifest);
+    let mut config = config::load(&match matches.value_of("project-dir") {
+        Some(p) => PathBuf::from(p),
+        None => { current_manifest_path().unwrap() }
+    });
+
     config.release = matches.is_present("release");
 
-    // Provide a way to clean the shell
-    if let Some(_) = matches.subcommand_matches("clean") {
-        shell::clean(&config);
-        exit(0);
-    }
+    // Provide a way to clean the shells
+    matches.is_present("clean") && shell::clean(&config);
 
     // Always check to see if we have the project shell embedded
     // Noticeably, this is done after clean has a chance to run.
     shell::embed_if_not_present(&config);
 
-    debug!("project_path: {}", config.project_path_str());
-    exit(1);
-
     if let Some(_) = matches.subcommand_matches("build") {
-        // build::build(&current_manifest, &config);
-        println!("Todo: Implment auto build via gradle!")
+        commands::build(&config);
     }
 
-    else if let Some(_) = matches.subcommand_matches("install") {
-        // install::install(&current_manifest, &config);
-        println!("Todo: Implment auto apk installer!")
+    else if let Some(_) = matches.subcommand_matches("device-install") {
+        commands::install(&config);
     }
 
     // If we have not matched any sub command at this point,
@@ -131,5 +119,8 @@ fn current_manifest_path() -> ManifestResult {
     struct Data { root: String }
     let stdout = String::from_utf8(output.stdout).unwrap();
     let decoded: Data = serde_json::from_str(&stdout).unwrap();
-    Ok(Path::new(&decoded.root).to_owned())
+    let path = Path::new(&decoded.root).to_owned();
+
+    // debug!("manifest: {:?}", path);
+    Ok(path)
 }

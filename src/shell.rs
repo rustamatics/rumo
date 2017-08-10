@@ -28,7 +28,7 @@ pub fn embed_if_not_present(config: &Config) {
 
 /// Cleans the directory `android-shell` from the projects
 /// target directory.
-pub fn clean(config: &Config) {
+pub fn clean(config: &Config) -> bool {
     let project_path = config.project_path_str();
 
     if android_shell_exists(project_path) {
@@ -37,6 +37,8 @@ pub fn clean(config: &Config) {
             Err(e) => println!("Failed to remove Android Shell: {}", e)
         }
     }
+
+    true
 }
 
 fn android_shell_exists(project_path: &str) -> bool {

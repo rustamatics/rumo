@@ -17,12 +17,6 @@ pub fn mkdirp(path: &str) -> Result<(), Error> {
     }
 }
 
-pub fn lnbreak() {
-    // Provide a visual line break for development mode
-    #[cfg(debug_assertions)]
-    print!("\n\n\n");
-}
-
 pub fn unzip_shell(data: &'static [u8], dst: String) -> bool {
     let reader = std::io::Cursor::new(data);
     let mut archive = zip::ZipArchive::new(reader).unwrap();
