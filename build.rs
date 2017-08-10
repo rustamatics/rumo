@@ -10,7 +10,7 @@ use std::fs::File;
 
 fn main() {
     if ! Path::new("target/android-shell.zip").exists() {
-        zip_it("./shell", "target/android-shell.zip").unwrap();
+        zip_it("./turtles/android-shell", "target/android-shell.zip").unwrap();
     }
 }
 

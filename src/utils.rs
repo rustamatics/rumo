@@ -3,11 +3,19 @@ use zip;
 use std;
 use std::io;
 use std::fs;
+use std::path::Path;
+use std::io::{Error};
 
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
 
-
+pub fn mkdirp(path: &str) -> Result<(), Error> {
+    if ! Path::new(path).exists() {
+        fs::create_dir(path)
+    } else {
+        Ok(())
+    }
+}
 
 pub fn lnbreak() {
     // Provide a visual line break for development mode
@@ -15,24 +23,16 @@ pub fn lnbreak() {
     print!("\n\n\n");
 }
 
-pub fn unzip_shell(shell_dst: String) -> bool {
-    println!("unzip_shell -> shell_dst: {}", shell_dst);
-    let fname = std::path::Path::new(&shell_dst[..]);
-    let file = fs::File::open(&fname).unwrap();
-
-
-    let mut archive = zip::ZipArchive::new(file).unwrap();
+pub fn unzip_shell(data: &'static [u8], dst: String) -> bool {
+    let reader = std::io::Cursor::new(data);
+    let mut archive = zip::ZipArchive::new(reader).unwrap();
 
     for i in 0..archive.len()
     {
         let mut file = archive.by_index(i).unwrap();
-        let outpath = sanitize_filename(file.name());
-        println!("{}", outpath.display());
-
-        {
-            let comment = file.comment();
-            if comment.len() > 0 { println!("  File comment: {}", comment); }
-        }
+        let sanitized_filename = sanitize_filename(file.name());
+        let dst = format!("{}/{}", dst, sanitized_filename.to_str().unwrap());
+        let outpath = Path::new(&dst[..]);
 
         create_directory(outpath.parent().unwrap_or(std::path::Path::new("")), None);
 
@@ -40,7 +40,6 @@ pub fn unzip_shell(shell_dst: String) -> bool {
 
         if (&*file.name()).ends_with("/") {
             create_directory(&outpath, perms);
-
         }
         else {
             write_file(&mut file, &outpath, perms);

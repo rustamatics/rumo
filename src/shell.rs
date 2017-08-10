@@ -1,7 +1,7 @@
 use std::path::{Path};
 use std::fs::remove_dir_all;
 use config::Config;
-use utils::unzip_shell;
+use utils;
 use std::process::exit;
 
 pub const SHELL_ZIP: &'static [u8] = include_bytes!("../target/android-shell.zip");
@@ -10,10 +10,16 @@ pub const SHELL_ZIP: &'static [u8] = include_bytes!("../target/android-shell.zip
 /// if not then the zip is unloaded upon the <project>/target directory
 pub fn embed_if_not_present(config: &Config) {
     let project_path = config.project_path_str();
+    let target_dir = &format!("{}/target", project_path)[..];
+
+    match utils::mkdirp(target_dir) {
+        Err(_) => panic!("Unable to create target directory at: {}", target_dir),
+        Ok(_) => (),
+    }
+
     if ! android_shell_exists(project_path) {
-        if unzip_shell(android_shell_zip(project_path)) {
-            println!("Extracted Android Shell successfully");
-        } else {
+        let shell_dst = android_shell_dir(project_path);
+        if ! utils::unzip_shell(SHELL_ZIP, shell_dst) {
             error!("Unable to extract android shell to: {}", project_path);
             exit(1);
         }

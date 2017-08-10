@@ -73,7 +73,7 @@ fn main() {
         None => { current_manifest_path().unwrap() }
     };
 
-    debug!("Determined manifest file: {:?}", current_manifest);
+    debug!("manifest file: {:?}", current_manifest);
 
     // Fetching the configuration for the build.
     let mut config = config::load(&current_manifest);
@@ -89,7 +89,7 @@ fn main() {
     // Noticeably, this is done after clean has a chance to run.
     shell::embed_if_not_present(&config);
 
-    println!("project_path: {}", config.project_path_str());
+    debug!("project_path: {}", config.project_path_str());
     exit(1);
 
     if let Some(_) = matches.subcommand_matches("build") {
