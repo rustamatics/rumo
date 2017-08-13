@@ -9,6 +9,8 @@ use std::process::Stdio;
 use std::process::exit;
 use term;
 
+use std::fmt::Display;
+
 pub struct TermCmd {
     label: String,
     command: Command,
@@ -37,9 +39,27 @@ impl TermCmd {
 
     #[inline]
     pub fn arg<S: AsRef<OsStr>>(&mut self, arg: S) -> &mut TermCmd {
-        self.command_label.push(arg.as_ref().to_string_lossy().into_owned());
+        self.command_label.push(
+            arg.as_ref()
+                .to_string_lossy()
+                .into_owned(),
+        );
         self.command.arg(arg);
         self
+    }
+
+    #[inline]
+    pub fn arg_pair<N: Into<String>, V: Into<String>>(
+        &mut self,
+        arg_name: N,
+        arg_val: V,
+    ) -> &mut TermCmd
+    where
+        N: Display,
+        V: Display,
+    {
+        let arg = format!("--{}={}", arg_name, arg_val);
+        self.arg(arg)
     }
 
     #[inline]
@@ -61,7 +81,9 @@ impl TermCmd {
 
     pub fn exec_stdout(&mut self) -> Vec<u8> {
         if self.inherit_stdouterr {
-            self.command.stdout(Stdio::inherit()).stderr(Stdio::inherit());
+            self.command.stdout(Stdio::inherit()).stderr(
+                Stdio::inherit(),
+            );
         } else {
             self.command.stdout(Stdio::piped()).stderr(Stdio::piped());
         }
@@ -123,6 +145,6 @@ impl TermCmd {
             }
         }
 
-        exit(1);    // TODO: meh, shouldn't exit here
+        exit(1); // TODO: meh, shouldn't exit here
     }
 }
