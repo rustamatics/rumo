@@ -8,6 +8,7 @@ use config::Config;
 use termcmd::TermCmd;
 
 #[allow(non_camel_case_types)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Arch {
     ARM,
     ARM64,
@@ -39,6 +40,17 @@ impl Arch {
                 )
             }
         }
+    }
+
+    pub fn all() -> Vec<Arch> {
+        vec![
+            Arch::ARM,
+            Arch::ARM64,
+            Arch::X86,
+            Arch::X86_64,
+            Arch::MIPS,
+            Arch::MIPS64,
+        ]
     }
 }
 
@@ -101,7 +113,6 @@ pub fn install_standalone(config: &Config) {
 }
 
 fn install_toolchain(make_tool_path: &str, config: &Config, arch: Arch) {
-    print!("One-Time Install of Standalone NDK toolchain for: {}", arch);
     let toolchain_dir = &*format!(
         "{}/ndk-toolchain-{}",
         config.toolchain_target_dir.clone(),
@@ -109,6 +120,10 @@ fn install_toolchain(make_tool_path: &str, config: &Config, arch: Arch) {
     );
 
     if !Path::new(toolchain_dir).exists() {
+        print!(
+            "One-Time Install of Standalone NDK toolchain for: {}\n",
+            arch
+        );
         TermCmd::new("make_standalone_toolchain", make_tool_path)
             .inherit_stdouterr()
             .argp("install-dir", toolchain_dir)

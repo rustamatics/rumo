@@ -20,15 +20,17 @@ pub fn install_config(config: &Config) {
     }
 }
 
+#[allow(unused_variables)]
 fn install_fresh_config(config: &Config, file: &str) {
     debug!("Installing fresh config: .cargo/config")
 }
 
+#[allow(unused_variables)]
 fn update_existing_config(config: &Config, path: &str) {
     debug!("Updating existing config: .cargo/config");
 
     let data = config_contents(path).parse::<Value>().unwrap();
-    println!(".cargo/config\n:#{:?}\n", data)
+    println!(".cargo/config:\n{:#?}\n", data["target"])
 }
 
 fn validate_linker_config() -> bool {

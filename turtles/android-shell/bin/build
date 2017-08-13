@@ -17,27 +17,45 @@ if [[ "$RUST_APP_ROOT" == "" ]]; then
   exit 1
 fi
 
-function build() {
+##############################################
+# Prepare cargo dependencies and output lib
+
+function cargo_build() {
   # Lookup the expanded triple form
   triple_target=$1
   target=$2
   build_type=$3
 
   cd $RUST_APP_ROOT;
-  cargo build --release --target=$triple_target
+  echo " cargo: building library for: $triple_target"
+  cargo build -q --release --target=$triple_target
 
   if [ $? -eq 0 ]; then
+    echo " cargo: build completed: $triple_target"
     install_dir=$ROOT/app/libs/$target
     output_dir=$RUST_APP_ROOT/target/$triple_target/$build_type
     mkdir -p $install_dir
     cp $output_dir/lib$RUST_APP_NAME.so $install_dir/
   else
-    echo -e "\nCargo build failed"
+    echo -e "\n cargo build failed: $triple_target"
     exit 1;
   fi
 }
 
-build x86_64-linux-android x86_64 release
+IFS=', ' read -r -a cargo_build_targets <<< "$CARGO_BUILD_TARGETS"
+success=false
+
+# TODO: arrayify these triple targets from outside input
+cargo_build i686-linux-android x86 release
+
+if [[ "$success" != true ]]; then
+    echo " cargo: failed to build any targets($CARGO_BUILD_TARGETS)"
+    exit 1
+fi
+
+##############################################
+# Run Android Gradle Build
+
 cd $ROOT
 
 RUST_APP_NAME=$RUST_APP_NAME \
@@ -45,12 +63,16 @@ RUST_APP_ROOT=$RUST_APP_ROOT \
   $ROOT/gradlew build -q $@
 
 if [ $? -eq 0 ]; then
-  APK_DIR=$RUST_APP_ROOT/target/apk
-  mkdir -p $APK_DIR
-  cp $RUST_APP_ROOT/target/android-shell/app/build/outputs/apk/* $APK_DIR/
-  apk_list=$(ls -1 $APK_DIR)
+  if [[ "$RUMO_APK_OUTPUT" == "" ]]; then
+    RUMO_APK_OUTPUT=$RUST_APP_ROOT/target/apk
+  fi
 
+  mkdir -p $RUMO_APK_OUTPUT
+  cp $RUST_APP_ROOT/target/android-shell/app/build/outputs/apk/* $RUMO_APK_OUTPUT/
+  apk_list=$(ls -1 $RUMO_APK_OUTPUT)
+
+  echo
   echo -e "${CL_CYAN}${apk_list}${CL_NC}"
-  echo -e "${CL_GREEN}APK(s) Copied to: $APK_DIR${CL_NC}"
+  echo -e "${CL_GREEN}APK(s) Copied to: $RUMO_APK_OUTPUT${CL_NC}"
 fi
 

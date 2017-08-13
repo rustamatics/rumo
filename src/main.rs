@@ -28,6 +28,8 @@ pub mod commands;
 pub mod cargo;
 pub mod ndk;
 
+use ndk::Arch;
+
 // use config::Config;
 
 #[derive(Debug)]
@@ -136,30 +138,43 @@ fn main() {
         None => (),
     };
 
-    // TODO: more flexible vec allocation
-    config.enable_arm = matches.is_present("arch-arm");
-    config.enable_arm64 = matches.is_present("arch-arm64");
-    config.enable_x86 = matches.is_present("arch-x86");
-    config.enable_x86_64 = matches.is_present("arch-x86_64");
-    config.enable_mips = matches.is_present("arch-mips");
-    config.enable_mips_64 = matches.is_present("arch-mips64");
-
+    // Allow user to ignore linker config modifications
+    // (only if you are sure you know what your doing!)
     config.ignore_linker_config = matches.is_present("ignore-linker-config");
 
-    // Build fallback to x86 if no archs specified
-    if !config.enable_arm && !config.enable_arm64 && !config.enable_x86 &&
-        !config.enable_x86_64 && !config.enable_mips && !config.enable_mips_64
-    {
-        config.enable_x86 = true;
-    }
-
+    // Build vector of architectures
     if matches.is_present("arch-all") {
-        config.enable_arm = true;
-        config.enable_arm64 = true;
-        config.enable_x86 = true;
-        config.enable_x86_64 = true;
-        config.enable_mips = true;
-        config.enable_mips_64 = true;
+        config.build_targets = Arch::all();
+    } else {
+        if matches.is_present("arch-arm") {
+            config.build_targets.push(Arch::ARM);
+        }
+
+        if matches.is_present("arch-arm64") {
+            config.build_targets.push(Arch::ARM64);
+        }
+
+        if matches.is_present("arch-x86") {
+            config.build_targets.push(Arch::X86);
+        }
+
+        if matches.is_present("arch-x86_64") {
+            config.build_targets.push(Arch::X86_64);
+        }
+
+        if matches.is_present("arch-mips") {
+            config.build_targets.push(Arch::MIPS);
+        }
+
+        if matches.is_present("arch-mips64") {
+            config.build_targets.push(Arch::MIPS64);
+        }
+
+
+        // Build fallback to x86 if no archs specified
+        if config.build_targets.is_empty() {
+            config.build_targets.push(Arch::X86);
+        }
     }
 
     // Provide a way to clean the shells

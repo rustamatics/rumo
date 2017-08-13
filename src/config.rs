@@ -5,6 +5,7 @@ use std::io::Read;
 use std::path::Path;
 use std::path::PathBuf;
 use toml;
+use ndk::Arch;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct TomlPackage {
@@ -76,7 +77,7 @@ pub struct Config {
     pub ignore_linker_config: bool,
 
     /// List of targets to build the app for. Eg. `arm-linux-androideabi`.
-    pub build_targets: Vec<String>,
+    pub build_targets: Vec<Arch>,
 
     /// Version of android for which to compile.
     /// TODO: ensure that >=18 because Rustc only supports 18+
@@ -193,10 +194,8 @@ pub fn load(manifest_path: &Path) -> Config {
 
         ignore_linker_config: false,
 
-        build_targets: manifest_content
-            .as_ref()
-            .and_then(|a| a.build_targets.clone())
-            .unwrap_or(vec!["arm-linux-androideabi".to_owned()]),
+        build_targets: vec![],
+
         android_version: manifest_content
             .as_ref()
             .and_then(|a| a.android_version)

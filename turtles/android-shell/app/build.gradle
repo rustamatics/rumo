@@ -13,7 +13,7 @@ android {
 
         ndk {
           // abiFilters "armeabi", "x86_64"
-          abiFilters "x86_64"
+          abiFilters "x86"
         }
 
         externalNativeBuild {
@@ -24,6 +24,7 @@ android {
     }
 
     lintOptions {
+      quiet true
       abortOnError false
     }
 
