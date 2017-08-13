@@ -41,7 +41,7 @@ pub struct Config {
     pub android_api: String,
 
     pub project_path: PathBuf,
-    pub target_dir: String,
+    pub toolchain_target_dir: String,
 
     /// Name that the package will have on the Android machine.
     /// This is the key that Android uses to identify your package, so it should be unique for
@@ -166,7 +166,7 @@ pub fn load(manifest_path: &Path) -> Config {
         ndk_path: Path::new(&ndk_path).to_owned(),
         android_api: "24".to_owned(),
 
-        target_dir: format!("{}/target", project_path.to_str().unwrap()),
+        toolchain_target_dir: format!("{}/target", project_path.to_str().unwrap()),
 
         project_path: project_path,
         package_name: manifest_content

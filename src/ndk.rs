@@ -102,14 +102,19 @@ pub fn install_standalone(config: &Config) {
 
 fn install_toolchain(make_tool_path: &str, config: &Config, arch: Arch) {
     print!("One-Time Install of Standalone NDK toolchain for: {}", arch);
-    let toolchain_dir = &*format!("{}/.ndk-toolchain-{}", config.target_dir.clone(), arch);
+    let toolchain_dir = &*format!(
+        "{}/.ndk-toolchain-{}",
+        config.toolchain_target_dir.clone(),
+        arch
+    );
 
     if !Path::new(toolchain_dir).exists() {
         TermCmd::new("make_standalone_toolchain", make_tool_path)
             .inherit_stdouterr()
-            .argp("install-dir", config.target_dir.clone())
+            .argp("install-dir", toolchain_dir)
             .argp("api", config.android_api.clone())
-            .argp("arch", arch);
+            .argp("arch", arch)
+            .execute();
     } else {
         debug!("NDK Toolchain confirmed: {}", arch);
     }
