@@ -1,4 +1,4 @@
-use std::path::{Path};
+use std::path::Path;
 use std::fs::remove_dir_all;
 use config::Config;
 use utils;
@@ -17,9 +17,9 @@ pub fn embed_if_not_present(config: &Config) {
         Ok(_) => (),
     }
 
-    if ! android_shell_exists(project_path) {
+    if !android_shell_exists(project_path) {
         let shell_dst = android_shell_dir(project_path);
-        if ! utils::unzip_shell(SHELL_ZIP, shell_dst) {
+        if !utils::unzip_shell(SHELL_ZIP, shell_dst) {
             error!("Unable to extract android shell to: {}", project_path);
             exit(1);
         }
@@ -34,7 +34,7 @@ pub fn clean(config: &Config) -> bool {
     if android_shell_exists(project_path) {
         match remove_dir_all(android_shell_dir(project_path)) {
             Ok(_) => println!("Removed Android Shell successfully"),
-            Err(e) => println!("Failed to remove Android Shell: {}", e)
+            Err(e) => println!("Failed to remove Android Shell: {}", e),
         }
     }
 

@@ -14,11 +14,11 @@ fn main() {
     println!("CARGO_MANIFEST_DIR: {}", cargo_manifest_dir);
     println!("CWD: {:?}", current_dir().unwrap());
 
-    if ! Path::new("target/android-shell.zip").exists() {
-        if ! Path::new("turtles/android-shell").exists() {
-           panic!("Could not locate turtles/android-shell");
+    if !Path::new("target/android-shell.zip").exists() {
+        if !Path::new("turtles/android-shell").exists() {
+            panic!("Could not locate turtles/android-shell");
         } else {
-            if ! Path::new("target").exists() {
+            if !Path::new("target").exists() {
                 println!("creating target directory");
                 std::fs::create_dir("target").unwrap();
             }

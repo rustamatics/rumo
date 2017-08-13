@@ -1,4 +1,4 @@
-use config::{Config};
+use config::Config;
 use termcmd::TermCmd;
 
 pub fn build(config: &Config) {
