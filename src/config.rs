@@ -73,6 +73,8 @@ pub struct Config {
     pub enable_mips: bool,
     pub enable_mips_64: bool,
 
+    pub ignore_linker_config: bool,
+
     /// List of targets to build the app for. Eg. `arm-linux-androideabi`.
     pub build_targets: Vec<String>,
 
@@ -115,6 +117,7 @@ pub struct Config {
 }
 
 impl Config {
+    #[inline]
     pub fn project_path_str(&self) -> &str {
         self.project_path.to_str().unwrap()
     }
@@ -187,6 +190,8 @@ pub fn load(manifest_path: &Path) -> Config {
         enable_x86_64: false,
         enable_mips: false,
         enable_mips_64: false,
+
+        ignore_linker_config: false,
 
         build_targets: manifest_content
             .as_ref()

@@ -1,22 +1,22 @@
-# Kinito
+# Rumo
 
-Cross-platform Mobile build tool for Rust based Apps — Supporting Android / iOS
+Cross-platform Mmbile build tool for Rust based Apps — Supporting Android / iOS
 
 ## Installing
 
-    $ cargo install kinito
+    $ cargo install rumo
 
 ## Usage
 
     # Compile your app into a APK
-    $ kinito build
+    $ rumo build
 
     # Load the appropriate APK onto your emulator / device
-    $ kinito device-install
+    $ rumo device-install
 
 ## Android Overview
 
-Kinito let's you build native Android apps with Rust while not having to write any Java.
+Rumo let's you build native Android apps with Rust while not having to write any Java.
 
 The entire build process is wrapped up into a simple command.
 This is achieved by embedding your rust app as a shared library within a **NativeActivity**.
@@ -54,7 +54,7 @@ A shell project is provided automatically, with your own app injected inside, th
  See the examples for more details.
 
 
-#### 3. You can now run **kinito build** which will produce Android APKs *(arm-linux-androideabi)* in your ./project/target directory.
+#### 3. You can now run **rumo build** which will produce Android APKs *(arm-linux-androideabi)* in your ./project/target directory.
 
   - You can now achieve fast iterative development on the Desktop (x86) while building for mobile at the same time.
 

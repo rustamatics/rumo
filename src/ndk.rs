@@ -69,8 +69,8 @@ pub fn install_standalone(config: &Config) {
 
     if !Path::new(make_tool).exists() {
         error!(
-            "Could not find make_standalone_toolchain.py in your $NDK_HOME \
-                Please confirm you have set a valid NDK_HOME path"
+            "Could not find make_standalone_toolchain.py in your $NDK_HOME \n\
+                Please confirm you have set NDK_HOME to a valid path.\n"
         );
         exit(1);
     }
@@ -103,7 +103,7 @@ pub fn install_standalone(config: &Config) {
 fn install_toolchain(make_tool_path: &str, config: &Config, arch: Arch) {
     print!("One-Time Install of Standalone NDK toolchain for: {}", arch);
     let toolchain_dir = &*format!(
-        "{}/.ndk-toolchain-{}",
+        "{}/ndk-toolchain-{}",
         config.toolchain_target_dir.clone(),
         arch
     );

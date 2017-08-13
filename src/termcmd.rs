@@ -93,10 +93,10 @@ impl TermCmd {
         if let Some(ref mut t) = t {
             let _ = t.fg(term::color::BRIGHT_GREEN);
             let _ = t.attr(term::Attr::Bold);
-            writeln!(t, "  kinito: {}", self.label).unwrap();
+            writeln!(t, "  rumo: {}", self.label).unwrap();
             t.reset().unwrap();
         } else {
-            println!("  kinito: {}", self.label);
+            println!("  rumo: {}", self.label);
         }
 
         let output = self.command.output();

@@ -48,7 +48,7 @@ fn main() {
     const VERSION: Option<&'static str> = option_env!("CARGO_PKG_VERSION");
     const DESC: Option<&'static str> = option_env!("CARGO_PKG_DESCRIPTION");
 
-    let mut app = App::new("Kinito")
+    let mut app = App::new("Rumo")
         .version(VERSION.unwrap_or("unknown"))
         .about(DESC.unwrap_or("--"))
         .arg(
@@ -78,12 +78,23 @@ fn main() {
                 .long("ndk-toolchain-root")
                 .help(
                     "Root directory where individual standalone NDK toolchains \
-                    are placed during a One-Time install at build. \
+                    are placed during a One-Time install at build. \n\n\
 
-                    For each architecture targetted, a standalone NDK toolchain \
-                    will be created in this directory. \
+                    For each architecture targeted, a standalone NDK toolchain \
+                    will be created in this directory. \n\n\
 
-                    Default = <project_root>/target",
+                    Default = <project_root>/target\n",
+                ),
+        )
+        .arg(
+            Arg::with_name("ignore-linker-config")
+                .long("ignore-linker-config")
+                .help(
+                    "Ignore Linker configuration inside .cargo/config. \n\n\
+                    By default, Rumo will update the linker config for each \
+                    ABI inside the .cargo/config.\n\
+                    Use this flag to tell Rumo not to alter those settings.\n\n\
+                    ",
                 ),
         )
         .subcommand(SubCommand::with_name("build").help(
@@ -132,6 +143,8 @@ fn main() {
     config.enable_x86_64 = matches.is_present("arch-x86_64");
     config.enable_mips = matches.is_present("arch-mips");
     config.enable_mips_64 = matches.is_present("arch-mips64");
+
+    config.ignore_linker_config = matches.is_present("ignore-linker-config");
 
     // Build fallback to x86 if no archs specified
     if !config.enable_arm && !config.enable_arm64 && !config.enable_x86 &&

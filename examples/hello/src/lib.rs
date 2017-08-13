@@ -1,6 +1,6 @@
 #[cfg(target_os = "android")]
 extern crate android_ffi;
-// extern crate kinito;
+// extern crate rumo;
 
 use std::boxed::Box;
 
