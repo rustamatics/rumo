@@ -6,6 +6,6 @@ ROOT="$( cd $DIR/../ && pwd)"
 external_build=$ROOT/app/.externalNativeBuild
 
 if [ -d $external_build ]; then
-  echo "Clearing External Build Cache"
+  # echo "Clearing External Build Cache"
   rm -rf $external_build;
 fi

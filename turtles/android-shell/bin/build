@@ -42,7 +42,7 @@ cd $ROOT
 
 RUST_APP_NAME=$RUST_APP_NAME \
 RUST_APP_ROOT=$RUST_APP_ROOT \
-  $ROOT/gradlew build $@
+  $ROOT/gradlew build -q $@
 
 if [ $? -eq 0 ]; then
   APK_DIR=$RUST_APP_ROOT/target/apk
