@@ -20,14 +20,36 @@ fi
 ##############################################
 # Prepare cargo dependencies and output lib
 
+function arch_to_triple() {
+    arch=$1
+    if [[ "$arch" == "x86" ]]; then
+        triple="i686-linux-android"
+    elif [[ "$arch" == "x86_64" ]]; then
+        triple="x86_64-linux-android"
+    elif [[ "$arch" == "arm" ]]; then
+        triple="arm-linux-androideabi"
+    elif [[ "$arch" == "arm64" ]]; then
+        triple="aarch64-linux-android"
+    elif [[ "$arch" == "mips" ]]; then
+        triple="mips-unknown-linux-gnu"
+    elif [[ "$arch" == "mips64" ]]; then
+        triple="mips64-unknown-linux-gnuabi64"
+    else
+        echo "Unknow arch_to_triple conversion for: $arch"
+        exit 1
+    fi
+
+    echo $triple
+}
+
 function cargo_build() {
   # Lookup the expanded triple form
-  triple_target=$1
-  target=$2
-  build_type=$3
+  target=$1
+  build_type=$2
+  triple_target=$(arch_to_triple $target)
 
   cd $RUST_APP_ROOT;
-  echo " cargo: building library for: $triple_target"
+  echo " cargo: building library: $triple_target / $target"
   cargo build -q --release --target=$triple_target
 
   if [ $? -eq 0 ]; then
@@ -46,7 +68,10 @@ IFS=', ' read -r -a cargo_build_targets <<< "$CARGO_BUILD_TARGETS"
 success=false
 
 # TODO: arrayify these triple targets from outside input
-cargo_build i686-linux-android x86 release
+for arch in ${cargo_build_targets[@]}; do
+    cargo_build $arch release && success=true
+done
+
 
 if [[ "$success" != true ]]; then
     echo " cargo: failed to build any targets($CARGO_BUILD_TARGETS)"
@@ -57,22 +82,23 @@ fi
 # Run Android Gradle Build
 
 cd $ROOT
-
+echo "gradle: building android shell"
 RUST_APP_NAME=$RUST_APP_NAME \
 RUST_APP_ROOT=$RUST_APP_ROOT \
   $ROOT/gradlew build -q $@
 
 if [ $? -eq 0 ]; then
-  if [[ "$RUMO_APK_OUTPUT" == "" ]]; then
-    RUMO_APK_OUTPUT=$RUST_APP_ROOT/target/apk
-  fi
+    echo "gradle: build complete"
+    if [[ "$RUMO_APK_OUTPUT" == "" ]]; then
+        RUMO_APK_OUTPUT=$RUST_APP_ROOT/target/apk
+    fi
 
-  mkdir -p $RUMO_APK_OUTPUT
-  cp $RUST_APP_ROOT/target/android-shell/app/build/outputs/apk/* $RUMO_APK_OUTPUT/
-  apk_list=$(ls -1 $RUMO_APK_OUTPUT)
+    mkdir -p $RUMO_APK_OUTPUT
+    cp $RUST_APP_ROOT/target/android-shell/app/build/outputs/apk/* $RUMO_APK_OUTPUT/
+    apk_list=$(ls -1 $RUMO_APK_OUTPUT)
 
-  echo
-  echo -e "${CL_CYAN}${apk_list}${CL_NC}"
-  echo -e "${CL_GREEN}APK(s) Copied to: $RUMO_APK_OUTPUT${CL_NC}"
+    echo
+    echo -e "${CL_CYAN}${apk_list}${CL_NC}"
+    echo -e "${CL_GREEN}APK(s) Copied to: $RUMO_APK_OUTPUT${CL_NC}"
 fi
 

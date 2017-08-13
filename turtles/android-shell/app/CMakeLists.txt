@@ -35,6 +35,8 @@ endif()
 
 if (ANDROID_ABI STREQUAL "x86_64")
   set(RUST_ARCH x86_64-linux-android)
+elseif(ANDROID_ABI STREQUAL "x86")
+  set(RUST_ARCH i686-linux-android)
 elseif(ANDROID_ABI STREQUAL "armeabi-v7a")
   set(RUST_ARCH armv7-linux-androideabi)
 elseif(ANDROID_ABI STREQUAL "armeabi")
