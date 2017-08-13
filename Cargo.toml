@@ -1,10 +1,10 @@
 [package]
-name = "kinito"
-version = "0.1.5"
+name = "rumo"
+version = "0.1.0"
 authors = ["Bailey Cosier <bailey.cosier@gmail.com>"]
 license = "MIT"
-description = "[Alpha] Mobile framework & build tools for Android / iOS"
-repository = "https://github.com/openkinito/kinito"
+description = "Mobile framework & build tooling"
+repository = "https://github.com/rustamatics/rumo"
 
 build = "build.rs"
 
