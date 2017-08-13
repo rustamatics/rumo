@@ -49,7 +49,7 @@ impl TermCmd {
     }
 
     #[inline]
-    pub fn arg_pair<N: Into<String>, V: Into<String>>(
+    pub fn argp<N: Into<String>, V: Into<String>>(
         &mut self,
         arg_name: N,
         arg_val: V,

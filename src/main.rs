@@ -89,12 +89,16 @@ fn main() {
     config.release = matches.is_present("release");
 
     config.enable_arm = matches.is_present("arch-arm");
-    config.enable_armv7 = matches.is_present("arch-armv7");
+    config.enable_arm64 = matches.is_present("arch-arm64");
     config.enable_x86 = matches.is_present("arch-x86");
+    config.enable_x86_64 = matches.is_present("arch-x86_64");
     config.enable_mips = matches.is_present("arch-mips");
+    config.enable_mips_64 = matches.is_present("arch-mips64");
 
-    // Build x86 if no archs specified
-    if !config.enable_arm && !config.enable_armv7 && !config.enable_x86 && !config.enable_mips {
+    // Build fallback to x86 if no archs specified
+    if !config.enable_arm && !config.enable_arm64 && !config.enable_x86 &&
+        !config.enable_x86_64 && !config.enable_mips && !config.enable_mips_64
+    {
         config.enable_x86 = true;
     }
 

@@ -38,8 +38,10 @@ pub struct Config {
     // pub sdk_path: PathBuf,
     /// Path to the root of the Android NDK.
     pub ndk_path: PathBuf,
+    pub android_api: String,
 
     pub project_path: PathBuf,
+    pub target_dir: String,
 
     /// Name that the package will have on the Android machine.
     /// This is the key that Android uses to identify your package, so it should be unique for
@@ -61,13 +63,15 @@ pub struct Config {
     pub enable_arm: bool,
 
     /// Enable armv7 target
-    pub enable_armv7: bool,
+    pub enable_arm64: bool,
 
     /// Enable armv7 target
     pub enable_x86: bool,
+    pub enable_x86_64: bool,
 
     /// Enable mips target
     pub enable_mips: bool,
+    pub enable_mips_64: bool,
 
     /// List of targets to build the app for. Eg. `arm-linux-androideabi`.
     pub build_targets: Vec<String>,
@@ -160,6 +164,10 @@ pub fn load(manifest_path: &Path) -> Config {
     Config {
         // sdk_path: Path::new(&sdk_path).to_owned(),
         ndk_path: Path::new(&ndk_path).to_owned(),
+        android_api: "24".to_owned(),
+
+        target_dir: format!("{}/target", project_path.to_str().unwrap()),
+
         project_path: project_path,
         package_name: manifest_content
             .as_ref()
@@ -174,9 +182,11 @@ pub fn load(manifest_path: &Path) -> Config {
         package_icon: manifest_content.as_ref().and_then(|a| a.icon.clone()),
 
         enable_arm: false,
-        enable_armv7: false,
+        enable_arm64: false,
         enable_x86: false,
+        enable_x86_64: false,
         enable_mips: false,
+        enable_mips_64: false,
 
         build_targets: manifest_content
             .as_ref()
