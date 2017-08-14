@@ -1,21 +1,28 @@
 [package]
 name = "rumo"
 version = "0.1.0"
-authors = ["Bailey Cosier <bailey.cosier@gmail.com>"]
+authors = ["Bailey Cosier <bailey@cosier.ca>"]
 license = "MIT"
 description = "Mobile framework & build tooling"
 repository = "https://github.com/rustamatics/rumo"
 
 build = "build.rs"
 
+[[bin]]
+name = "rumo"
+doc = false
+
+[lib]
+name = "rumo"
+
 [build-dependencies]
+walkdir = "1.0.7"
 libc = "0.2.28"
 zip = "0.2.5"
-walkdir = "1.0.7"
 
 [dependencies]
-android_ffi = "^0.1.0"
 android_support = "^0.1.0"
+android_ffi = "^0.1.0"
 
 zip = "0.2.5"
 clap = "^2.25.1"
@@ -25,8 +32,8 @@ term = "0.4.6"
 log = "0.3.8"
 env_logger = "0.4.3"
 
-serde = "^1.0.10"
 serde_derive = "^1.0.10"
 serde_json = "^1.0.2"
+serde = "^1.0.10"
 
 
