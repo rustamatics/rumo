@@ -101,7 +101,7 @@ fn main() {
                 .arg(Arg::with_name("x86").long("x86"))
                 .arg(Arg::with_name("x86_64").long("x86_64"))
                 .arg(Arg::with_name("mips").long("mips"))
-                .arg(Arg::with_name("mips64").long("mips64"))
+                .arg(Arg::with_name("mips64").long("mips64")),
         )
         .subcommand(
             SubCommand::with_name("install")

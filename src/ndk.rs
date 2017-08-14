@@ -42,6 +42,17 @@ impl Arch {
         }
     }
 
+    pub fn triple(&self) -> String {
+        match self {
+            &Arch::ARM => "arm-linux-androideabi",
+            &Arch::ARM64 => "aarch64-linux-android",
+            &Arch::X86 => "i686-linux-android",
+            &Arch::X86_64 => "x86_64-linux-android",
+            &Arch::MIPS => "mips-unknown-linux-gnu",
+            &Arch::MIPS64 => "mips64-unknown-linux-gnuabi64",
+        }.to_owned()
+    }
+
     pub fn all() -> Vec<Arch> {
         vec![
             Arch::ARM,
