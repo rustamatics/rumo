@@ -1,5 +1,5 @@
 use std::path::Path;
-use std::fs::{ File,OpenOptions };
+use std::fs::{ File,OpenOptions, create_dir };
 use std::io::{Read, Write, BufWriter};
 use std::process::exit;
 use std;
@@ -24,15 +24,47 @@ pub fn install_config(config: &Config) {
     }
 }
 
-#[allow(unused_variables)]
 fn install_fresh_config(config: &Config, file: &str) {
-    debug!("Installing fresh config: .cargo/config")
+    debug!("Installing fresh config: .cargo/config");
+    let cargo_config_dir = &*format!("{}/.cargo", config.project_path_str());
+
+    if !Path::new(cargo_config_dir).exists() {
+        create_dir(cargo_config_dir);
+    }
+
+    File::create(file);
+
+    let mut buffer = String::new();
+
+    for arch in &config.build_targets {
+        let triple = arch.triple();
+        let s = &*format!("[target.{}]\n", triple);
+        buffer.push_str(s);
+
+        let linker_path = format!(
+            "{}/ndk-toolchain-{}/bin/{}-gcc",
+            config.toolchain_target_dir,
+            arch,
+            triple
+        );
+
+        buffer.push_str(&*format!("linker = \"{}\"", linker_path));
+    }
+
+    config_write(&mut*buffer, file);
 }
 
 fn update_existing_config(config: &Config, path: &str) {
     debug!("Updating existing config: .cargo/config");
 
-    let mut data = config_contents(path).parse::<Value>().unwrap();
+    let mut data = match config_contents(path).parse::<Value>() {
+        Ok(d) => d,
+        Err(e) => {
+            error!("Could not parse .cargo/config\n{}", e);
+            return install_fresh_config(config, path);
+        }
+    };
+
     let tkey = "target";
     let linker_key = "linker";
 
@@ -86,12 +118,10 @@ fn update_existing_config(config: &Config, path: &str) {
             }
         }
     }
-
-    exit(1);
 }
 
 fn validate_linker_config() -> bool {
-    false
+    true
 }
 
 fn config_contents(path: &str) -> String {
