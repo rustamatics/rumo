@@ -25,7 +25,7 @@ android_support = "^0.1.0"
 android_ffi = "^0.1.0"
 
 zip = "0.2.5"
-clap = "^2.25.1"
+clap = "^2.26.0"
 toml = "0.4.2"
 term = "0.4.6"
 

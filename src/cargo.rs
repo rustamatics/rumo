@@ -29,8 +29,8 @@ fn install_fresh_config(config: &Config, file: &str) {
 fn update_existing_config(config: &Config, path: &str) {
     debug!("Updating existing config: .cargo/config");
 
-    let data = config_contents(path).parse::<Value>().unwrap();
-    println!(".cargo/config:\n{:#?}\n", data["target"])
+    let mut data = config_contents(path).parse::<Value>().unwrap();
+    println!("{:#?}\n", data["target"])
 }
 
 fn validate_linker_config() -> bool {

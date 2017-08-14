@@ -62,19 +62,6 @@ fn main() {
                 )
                 .takes_value(true),
         )
-        .arg(Arg::with_name("release").long("release").help(
-            "Build with cargo `release` mode optimizations",
-        ))
-        .arg(Arg::with_name("clean").long("clean").help(
-            "Clean build artifacts for a fresh compilation",
-        ))
-        .arg(Arg::with_name("arch-arm").long("arch-arm"))
-        .arg(Arg::with_name("arch-arm64").long("arch-arm64"))
-        .arg(Arg::with_name("arch-x86").long("arch-x86"))
-        .arg(Arg::with_name("arch-x86_64").long("arch-x86_64"))
-        .arg(Arg::with_name("arch-mips").long("arch-mips"))
-        .arg(Arg::with_name("arch-mips64").long("arch-mips64"))
-        .arg(Arg::with_name("arch-all").long("arch-all"))
         .arg(
             Arg::with_name("ndk-toolchain-root")
                 .long("ndk-toolchain-root")
@@ -99,12 +86,29 @@ fn main() {
                     ",
                 ),
         )
-        .subcommand(SubCommand::with_name("build").help(
-            "Compile Project into a APK\n",
-        ))
-        .subcommand(SubCommand::with_name("device-install").help(
-            "Install Android APK onto Device\n",
-        ));
+        .subcommand(
+            SubCommand::with_name("build")
+                .about("Create APK(s) from Project")
+                .arg(Arg::with_name("all").short("a").long("all"))
+                .arg(Arg::with_name("release").long("release").help(
+                    "Build with cargo `release` mode optimizations",
+                ))
+                .arg(Arg::with_name("clean").long("clean").help(
+                    "Clean build artifacts for a fresh compilation",
+                ))
+                .arg(Arg::with_name("arm").long("arm").help("build arm target"))
+                .arg(Arg::with_name("arm64").long("arm64"))
+                .arg(Arg::with_name("x86").long("x86"))
+                .arg(Arg::with_name("x86_64").long("x86_64"))
+                .arg(Arg::with_name("mips").long("mips"))
+                .arg(Arg::with_name("mips64").long("mips64"))
+        )
+        .subcommand(
+            SubCommand::with_name("install")
+                .about("Install build onto device\n")
+                .arg(Arg::with_name("android").long("--android"))
+                .arg(Arg::with_name("ios").long("--ios")),
+        );
 
     ///////////////////////////////////////////////////////////////////
 
@@ -142,48 +146,48 @@ fn main() {
     // (only if you are sure you know what your doing!)
     config.ignore_linker_config = matches.is_present("ignore-linker-config");
 
-    // Build vector of architectures
-    if matches.is_present("arch-all") {
-        config.build_targets = Arch::all();
-    } else {
-        if matches.is_present("arch-arm") {
-            config.build_targets.push(Arch::ARM);
-        }
-
-        if matches.is_present("arch-arm64") {
-            config.build_targets.push(Arch::ARM64);
-        }
-
-        if matches.is_present("arch-x86") {
-            config.build_targets.push(Arch::X86);
-        }
-
-        if matches.is_present("arch-x86_64") {
-            config.build_targets.push(Arch::X86_64);
-        }
-
-        if matches.is_present("arch-mips") {
-            config.build_targets.push(Arch::MIPS);
-        }
-
-        if matches.is_present("arch-mips64") {
-            config.build_targets.push(Arch::MIPS64);
-        }
-
-
-        // Build fallback to x86 if no archs specified
-        if config.build_targets.is_empty() {
-            config.build_targets.push(Arch::X86);
-        }
-    }
-
-    // Provide a way to clean the shells
-    matches.is_present("clean") && shell::clean(&config);
-
     ///////////////////////////////////////////////////////////////////
 
     // Every thing looks good, let's execute the users cli switches.
-    if let Some(_) = matches.subcommand_matches("build") {
+    if let Some(bm) = matches.subcommand_matches("build") {
+
+        // Build vector of architectures
+        if bm.is_present("all") {
+            config.build_targets = Arch::all();
+        } else {
+            if bm.is_present("arm") {
+                config.build_targets.push(Arch::ARM);
+            }
+
+            if bm.is_present("arm64") {
+                config.build_targets.push(Arch::ARM64);
+            }
+
+            if bm.is_present("x86") {
+                config.build_targets.push(Arch::X86);
+            }
+
+            if bm.is_present("x86_64") {
+                config.build_targets.push(Arch::X86_64);
+            }
+
+            if bm.is_present("mips") {
+                config.build_targets.push(Arch::MIPS);
+            }
+
+            if bm.is_present("mips64") {
+                config.build_targets.push(Arch::MIPS64);
+            }
+
+
+            // Build fallback to x86 if no archs specified
+            if config.build_targets.is_empty() {
+                config.build_targets.push(Arch::X86);
+            }
+        }
+
+        // Provide a way to clean the shells
+        bm.is_present("clean") && shell::clean(&config);
 
         // Check to see if we have the project shell embedded
         // Noticeably, this is done after clean has a chance to run.
