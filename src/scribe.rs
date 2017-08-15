@@ -2,30 +2,44 @@ use std::fs::{File, OpenOptions};
 use std::io::{Read, Write, BufWriter, stdout};
 use std;
 use std::process::exit;
-use std::convert::{AsRef, Into};
 use regex::Regex;
 use config::Config;
 
+use std::convert::AsRef;
+use ndk;
 
+#[derive(Debug, Clone)]
 struct ScribeVal {
-    val: String,
+    input: String,
 }
 
-impl From<u32> for ScribeVal {
-    fn from(val: u32) -> ScribeVal {
-        ScribeVal { val: format!("{}", val) }
+impl Into<ScribeVal> for u32 {
+    fn into(self) -> ScribeVal {
+        ScribeVal { input: format!("{}", self) }
     }
 }
 
-impl From<String> for ScribeVal {
-    fn from(val: String) -> ScribeVal {
-        ScribeVal { val: val }
+impl Into<ScribeVal> for String  {
+    fn into(self) -> ScribeVal {
+        ScribeVal { input: format!("\"{}\"", self) }
     }
 }
 
-impl<'a> From<&'a String> for ScribeVal {
-    fn from(val: &String) -> ScribeVal {
-        ScribeVal { val: val.clone() }
+impl Into<ScribeVal> for Vec<ndk::Arch> {
+    fn into(self) -> ScribeVal {
+        let mapped = self
+            .iter()
+            .map(|s: &ndk::Arch| format!("\"{}\"", s))
+            .collect::<Vec<String>>()
+            .join(", ");
+
+        ScribeVal { input: mapped }
+    }
+}
+
+impl std::fmt::Display for ScribeVal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+        write!(f, "{}", self.input)
     }
 }
 
@@ -33,16 +47,24 @@ struct ScribeChain {
     contents: String,
 }
 
+impl AsRef<str> for ScribeChain {
+    fn as_ref(&self) -> &str {
+        &*self.contents
+    }
+}
+
 impl ScribeChain {
     fn replace<T: Into<ScribeVal>>(&mut self, var: &str, val: T) -> &mut Self
     where
         T: std::fmt::Display,
     {
-        let regex = Regex::new(r"buildToolsVersion[\s+](?P<ver>\d+)").unwrap();
-        let replace = &*format!("{} {}", var, val);
+        let r = format!("{}[\\s+](?P<ver>.*)?", var);
+        let regex = Regex::new(&*r).unwrap();
+        let replace = &*format!("{} {}", var, val.into().input);
         let data = self.contents.clone();
-        let out = &*regex.replace(&*data, replace);
-        self.contents = out.to_owned();
+        let out = regex.replace(&data[..], replace);
+
+        self.contents = out.into_owned();
         self
     }
 }
@@ -62,13 +84,17 @@ fn app_gradle(config: &Config, root: &str) {
 
     let mut app_gradle_chain = ScribeChain { contents: file_contents(path) };
 
+    let targets: ScribeVal = config.build_targets.clone().into();
+
     app_gradle_chain
         .replace("compileSdkVersion", config.compile_sdk_version)
         .replace("buildToolsVersion", config.build_tools_version)
         .replace("minSdkVersion", config.min_sdk_version)
         .replace("targetSdkVersion", config.target_sdk_version)
-        .replace("versionCode", &config.package_version)
-        .replace("applicationId", &config.package_name);
+        .replace("versionCode", config.package_version.clone())
+        .replace("applicationId", config.package_name.clone())
+        .replace("abiFilters", targets.clone())
+        .replace("include", targets);
 
 
     // compileSdkVersion

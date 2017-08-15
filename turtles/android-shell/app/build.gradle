@@ -12,8 +12,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
-          // abiFilters "armeabi", "x86_64"
-          abiFilters "x86"
+          abiFilters "..."
         }
 
         externalNativeBuild {

@@ -186,6 +186,7 @@ fn main() {
             // Build fallback to x86 if no archs specified
             if config.build_targets.is_empty() {
                 config.build_targets.push(Arch::X86);
+                config.build_targets.push(Arch::ARM);
             }
         }
 

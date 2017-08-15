@@ -23,6 +23,7 @@ zip = "0.2.5"
 [dependencies]
 android_support = "^0.1.0"
 android_ffi = "^0.1.0"
+# lazy_static = "0.2.8"
 
 zip = "0.2.5"
 clap = "^2.26.0"
