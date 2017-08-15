@@ -14,6 +14,8 @@ extern crate toml;
 extern crate clap;
 extern crate zip;
 
+extern crate regex;
+
 use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
@@ -27,6 +29,7 @@ pub mod utils;
 pub mod commands;
 pub mod cargo;
 pub mod ndk;
+pub mod scribe;
 
 use ndk::Arch;
 
@@ -192,6 +195,9 @@ fn main() {
         // Check to see if we have the project shell embedded
         // Noticeably, this is done after clean has a chance to run.
         shell::embed_if_not_present(&config);
+
+        // Scribe correct project data upon the turtle shell
+        scribe::turtle_shell(&config);
 
         // Ensure we have access to Standalone NDK toolchains
         // for each ABI we wish to target

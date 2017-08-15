@@ -1,7 +1,6 @@
 use std::path::Path;
-use std::fs::{ File,OpenOptions, create_dir };
+use std::fs::{File, OpenOptions, create_dir};
 use std::io::{Read, Write, BufWriter};
-use std::process::exit;
 use std;
 
 use toml;
@@ -29,10 +28,10 @@ fn install_fresh_config(config: &Config, file: &str) {
     let cargo_config_dir = &*format!("{}/.cargo", config.project_path_str());
 
     if !Path::new(cargo_config_dir).exists() {
-        create_dir(cargo_config_dir);
+        create_dir(cargo_config_dir).expect("Could not create .cargo directory");
     }
 
-    File::create(file);
+    File::create(file).expect("Unable to create .cargo/config file");
 
     let mut buffer = String::new();
 
@@ -51,7 +50,7 @@ fn install_fresh_config(config: &Config, file: &str) {
         buffer.push_str(&*format!("linker = \"{}\"", linker_path));
     }
 
-    config_write(&mut*buffer, file);
+    config_write(&mut *buffer, file).expect("config_write: Failed to write config data to file")
 }
 
 fn update_existing_config(config: &Config, path: &str) {
@@ -103,7 +102,7 @@ fn update_existing_config(config: &Config, path: &str) {
                 match config_write(&mut *s, path) {
                     Ok(_) => {
                         debug!("config_write succeeded");
-                    },
+                    }
                     Err(e) => {
                         panic!("Failed to write cargo config file: {}", e);
                     }
@@ -134,12 +133,14 @@ fn config_contents(path: &str) -> String {
     contents
 }
 
-fn config_write(contents: &mut str, path: &str) -> Result<(),std::io::Error> {
+fn config_write(contents: &mut str, path: &str) -> Result<(), std::io::Error> {
     debug!("writing to: {}", path);
     let mut options = OpenOptions::new();
     options.write(true);
     let file = options.open(path).unwrap();
     let mut file_buffer = BufWriter::new(file);
-    file_buffer.write_all(contents.as_bytes());
+    file_buffer.write_all(contents.as_bytes()).expect(
+        "Failed to write contents to file buffer",
+    );
     file_buffer.flush()
 }

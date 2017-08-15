@@ -98,28 +98,8 @@ pub fn install_standalone(config: &Config) {
         exit(1);
     }
 
-    if config.enable_arm {
-        install_toolchain(make_tool, config, Arch::ARM);
-    }
-
-    if config.enable_arm64 {
-        install_toolchain(make_tool, config, Arch::ARM64);
-    }
-
-    if config.enable_x86 {
-        install_toolchain(make_tool, config, Arch::X86);
-    }
-
-    if config.enable_x86_64 {
-        install_toolchain(make_tool, config, Arch::X86_64);
-    }
-
-    if config.enable_mips {
-        install_toolchain(make_tool, config, Arch::MIPS);
-    }
-
-    if config.enable_mips_64 {
-        install_toolchain(make_tool, config, Arch::MIPS64);
+    for arch in &config.build_targets {
+        install_toolchain(make_tool, config, arch.clone());
     }
 }
 
@@ -138,7 +118,7 @@ fn install_toolchain(make_tool_path: &str, config: &Config, arch: Arch) {
         TermCmd::new("make_standalone_toolchain", make_tool_path)
             .inherit_stdouterr()
             .argp("install-dir", toolchain_dir)
-            .argp("api", config.android_api.clone())
+            .argp("api", format!("{}", config.android_version.clone()))
             .argp("arch", arch)
             .execute();
     } else {

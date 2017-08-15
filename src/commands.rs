@@ -21,7 +21,7 @@ pub fn build(config: &Config) {
         .inherit_stdouterr()
         .env("CARGO_BUILD_TARGETS", cargo_build_targets)
         .env("RUST_APP_ROOT", project_path)
-        .env("RUST_APP_NAME", config.package_name_sanitized.clone())
+        .env("RUST_APP_NAME", config.project_name_underscore.clone())
         .execute();
 }
 
@@ -32,7 +32,7 @@ pub fn install(config: &Config) {
         .current_dir(project_path)
         .inherit_stdouterr()
         .env("RUST_APP_ROOT", project_path)
-        .env("RUST_APP_NAME", config.package_name_sanitized.clone())
+        .env("RUST_APP_NAME", config.project_name_underscore.clone())
         .execute();
 }
 
@@ -43,7 +43,7 @@ pub fn clean(config: &Config) {
         .current_dir(project_path)
         .inherit_stdouterr()
         .env("RUST_APP_ROOT", project_path)
-        .env("RUST_APP_NAME", config.package_name_sanitized.clone())
+        .env("RUST_APP_NAME", config.project_name_underscore.clone())
         .execute();
 }
 

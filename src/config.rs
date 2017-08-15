@@ -10,6 +10,7 @@ use ndk::Arch;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct TomlPackage {
     name: String,
+    version: String,
     metadata: Option<TomlMetadata>,
 }
 
@@ -25,6 +26,10 @@ struct TomlAndroid {
     icon: Option<String>,
     assets: Option<String>,
     res: Option<String>,
+    compile_sdk_version: Option<u32>,
+    min_sdk_version: Option<u32>,
+    target_sdk_version: Option<u32>,
+    build_tools_version: Option<u32>,
     android_version: Option<u32>,
     fullscreen: Option<bool>,
     application_attributes: Option<BTreeMap<String, String>>,
@@ -39,19 +44,26 @@ pub struct Config {
     // pub sdk_path: PathBuf,
     /// Path to the root of the Android NDK.
     pub ndk_path: PathBuf,
-    pub android_api: String,
 
+    /// The path to the root of the Cargo application.
+    /// This comes from the cargo locate-project method or via
+    /// a command line flag for out of source use.
     pub project_path: PathBuf,
+
+    /// Root directory to place the collection of
+    /// Standalone NDK toolchains, which are generated during a one-time initialisation.
     pub toolchain_target_dir: String,
 
     /// Name that the package will have on the Android machine.
     /// This is the key that Android uses to identify your package, so it should be unique for
     /// for each application and should contain the vendor's name.
     pub package_name: String,
-    pub package_name_sanitized: String,
+    pub package_version: String,
+
     /// Name of the project to feed to the SDK. This will be the name of the APK file.
     /// Should be a "system-ish" name, like `my-project`.
     pub project_name: String,
+    pub project_name_underscore: String,
 
     /// Label for the package.
     pub package_label: String,
@@ -60,24 +72,15 @@ pub struct Config {
     /// Versions of this icon with different resolutions have to reside in the res folder
     pub package_icon: Option<String>,
 
-    /// Enable arm target
-    pub enable_arm: bool,
-
-    /// Enable armv7 target
-    pub enable_arm64: bool,
-
-    /// Enable armv7 target
-    pub enable_x86: bool,
-    pub enable_x86_64: bool,
-
-    /// Enable mips target
-    pub enable_mips: bool,
-    pub enable_mips_64: bool,
-
     pub ignore_linker_config: bool,
 
     /// List of targets to build the app for. Eg. `arm-linux-androideabi`.
     pub build_targets: Vec<Arch>,
+
+    pub build_tools_version: u32,
+    pub compile_sdk_version: u32,
+    pub target_sdk_version: u32,
+    pub min_sdk_version: u32,
 
     /// Version of android for which to compile.
     /// TODO: ensure that >=18 because Rustc only supports 18+
@@ -126,7 +129,7 @@ impl Config {
 
 pub fn load(manifest_path: &Path) -> Config {
     // Determine the name of the package and the Android-specific metadata from the Cargo.toml
-    let (package_name, manifest_content) = {
+    let (package_name, package_version, manifest_content) = {
         let content = {
             let mut file = File::open(manifest_path).unwrap();
             let mut content = String::new();
@@ -138,7 +141,12 @@ pub fn load(manifest_path: &Path) -> Config {
         let decoded: TomlPackage = toml["package"].clone().try_into::<TomlPackage>().unwrap();
 
         let package_name = decoded.name.clone();
-        (package_name, decoded.metadata.and_then(|m| m.android))
+        let package_version = decoded.version.clone();
+        (
+            package_name,
+            package_version,
+            decoded.metadata.and_then(|m| m.android),
+        )
     };
 
     let ndk_path = env::var("NDK_HOME").expect(
@@ -146,29 +154,15 @@ pub fn load(manifest_path: &Path) -> Config {
                                                 $NDK_HOME environment variable.",
     );
 
-    // let sdk_path = {
-    //     let mut try = env::var("ANDROID_SDK_HOME").ok();
-
-    //     if try.is_none() {
-    //         try = env::var("ANDROID_SDK").ok();
-    //     }
-
-    //     try.expect("Please set the path to the Android SDK with either the $ANDROID_SDK_HOME or \
-    //                 the $ANDROID_HOME environment variable.")
-    // };
-
     let manifest_parent = str::replace(&manifest_path.to_str().unwrap()[..], "/Cargo.toml", "");
     let project_path = Path::new(&manifest_parent[..]).to_owned();
 
 
     let n = &package_name.clone()[..];
-    let package_name_sanitized = str::replace(&str::replace(n, "-", "_")[..], "rust.", "");
+    let project_name_underscore = str::replace(&str::replace(n, "-", "_")[..], "rust.", "");
 
-    // For the moment some fields of the config are dummies.
     Config {
-        // sdk_path: Path::new(&sdk_path).to_owned(),
         ndk_path: Path::new(&ndk_path).to_owned(),
-        android_api: "24".to_owned(),
 
         toolchain_target_dir: format!("{}/target", project_path.to_str().unwrap()),
 
@@ -177,33 +171,50 @@ pub fn load(manifest_path: &Path) -> Config {
             .as_ref()
             .and_then(|a| a.package_name.clone())
             .unwrap_or_else(|| format!("rust.{}", package_name)),
+        package_version: package_version,
+
         project_name: package_name.clone(),
-        package_name_sanitized: package_name_sanitized.clone(),
+        project_name_underscore: project_name_underscore.clone(),
         package_label: manifest_content
             .as_ref()
             .and_then(|a| a.label.clone())
             .unwrap_or_else(|| package_name.clone()),
         package_icon: manifest_content.as_ref().and_then(|a| a.icon.clone()),
 
-        enable_arm: false,
-        enable_arm64: false,
-        enable_x86: false,
-        enable_x86_64: false,
-        enable_mips: false,
-        enable_mips_64: false,
-
         ignore_linker_config: false,
 
         build_targets: vec![],
+
+        compile_sdk_version: manifest_content
+            .as_ref()
+            .and_then(|a| a.compile_sdk_version)
+            .unwrap_or(24),
+
+        build_tools_version: manifest_content
+            .as_ref()
+            .and_then(|a| a.build_tools_version)
+            .unwrap_or(24),
+
+        min_sdk_version: manifest_content
+            .as_ref()
+            .and_then(|a| a.min_sdk_version)
+            .unwrap_or(15),
+
+        target_sdk_version: manifest_content
+            .as_ref()
+            .and_then(|a| a.min_sdk_version)
+            .unwrap_or(18),
 
         android_version: manifest_content
             .as_ref()
             .and_then(|a| a.android_version)
             .unwrap_or(18),
+
         assets_path: manifest_content
             .as_ref()
             .and_then(|a| a.assets.as_ref())
             .map(|p| manifest_path.parent().unwrap().join(p)),
+
         res_path: manifest_content.as_ref().and_then(|a| a.res.as_ref()).map(
             |p| {
                 manifest_path.parent().unwrap().join(p)
