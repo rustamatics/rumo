@@ -1,6 +1,7 @@
 use config::Config;
 use termcmd::TermCmd;
 
+/// Builds the android shell, ergo kicks off the gradle build and apk compile.
 pub fn build(config: &Config) {
     let project_path = config.project_path_str();
     let mut cargo_build_targets = String::new();
@@ -24,6 +25,20 @@ pub fn build(config: &Config) {
         .env("RUST_APP_NAME", config.project_name_underscore.clone())
         .execute();
 }
+
+/// Copies project specific assets into the android-shell
+pub fn assets(config: &Config) {
+    let project_path = config.project_path_str();
+    println!("  rumo: installing assets");
+    TermCmd::new("install", "target/android-shell/bin/assets")
+        .current_dir(project_path)
+        .inherit_stdouterr()
+        .env("RUST_APP_RESOURCES", config.resources_dir.clone())
+        .env("RUST_APP_ROOT", project_path)
+        .env("RUST_APP_NAME", config.project_name_underscore.clone())
+        .execute();
+}
+
 
 pub fn install(config: &Config) {
     let project_path = config.project_path_str();

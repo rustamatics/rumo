@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.rumo.shell"
-          android:versionCode="1"
-          android:versionName="1.0">
+          android:versionCode="[version_code]"
+          android:versionName="[version_name]">
 
   <!-- This .apk has no Java code itself, so set hasCode to false. -->
   <application

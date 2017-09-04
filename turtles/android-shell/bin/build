@@ -94,7 +94,7 @@ if [ $? -eq 0 ]; then
     fi
 
     mkdir -p $RUMO_APK_OUTPUT
-    cp $RUST_APP_ROOT/target/android-shell/app/build/outputs/apk/* $RUMO_APK_OUTPUT/
+    cp -R $RUST_APP_ROOT/target/android-shell/app/build/outputs/apk/* $RUMO_APK_OUTPUT/
     apk_list=$(ls -1 $RUMO_APK_OUTPUT)
 
     echo

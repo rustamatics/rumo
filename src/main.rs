@@ -186,7 +186,7 @@ fn main() {
             // Build fallback to x86 if no archs specified
             if config.build_targets.is_empty() {
                 config.build_targets.push(Arch::X86);
-                config.build_targets.push(Arch::ARM);
+                // config.buildc_targets.push(Arch::ARM);
             }
         }
 
@@ -196,6 +196,7 @@ fn main() {
         // Check to see if we have the project shell embedded
         // Noticeably, this is done after clean has a chance to run.
         shell::embed_if_not_present(&config);
+        commands::assets(&config);
 
         // Scribe correct project data upon the turtle shell
         scribe::turtle_shell(&config);

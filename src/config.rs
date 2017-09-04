@@ -23,7 +23,10 @@ struct TomlMetadata {
 pub struct TomlAndroid {
     pub application_attributes: Option<BTreeMap<String, String>>,
     pub activity_attributes: Option<BTreeMap<String, String>>,
+    pub resources_dir: Option<String>,
+
     package_name: Option<String>,
+    version_code: Option<u32>,
     label: Option<String>,
     icon: Option<String>,
     assets: Option<String>,
@@ -31,7 +34,7 @@ pub struct TomlAndroid {
     compile_sdk_version: Option<u32>,
     min_sdk_version: Option<u32>,
     target_sdk_version: Option<u32>,
-    build_tools_version: Option<u32>,
+    build_tools_version: Option<String>,
     android_version: Option<u32>,
     fullscreen: Option<bool>,
     build_targets: Option<Vec<String>>,
@@ -45,6 +48,7 @@ pub struct Config {
     /// Path to the root of the Android NDK.
     pub ndk_path: PathBuf,
     pub meta: Option<TomlAndroid>,
+    pub resources_dir: String,
 
     /// The path to the root of the Cargo application.
     /// This comes from the cargo locate-project method or via
@@ -60,6 +64,10 @@ pub struct Config {
     /// for each application and should contain the vendor's name.
     pub package_name: String,
     pub package_version: String,
+
+    /// Incrementing number for android versionCode
+    /// (different than version_name)
+    pub version_code: u32,
 
     /// Name of the project to feed to the SDK. This will be the name of the APK file.
     /// Should be a "system-ish" name, like `my-project`.
@@ -78,7 +86,7 @@ pub struct Config {
     /// List of targets to build the app for. Eg. `arm-linux-androideabi`.
     pub build_targets: Vec<Arch>,
 
-    pub build_tools_version: u32,
+    pub build_tools_version: String,
     pub compile_sdk_version: u32,
     pub target_sdk_version: u32,
     pub min_sdk_version: u32,
@@ -166,6 +174,10 @@ pub fn load(manifest_path: &Path) -> Config {
         ndk_path: Path::new(&ndk_path).to_owned(),
 
         toolchain_target_dir: format!("{}/target", project_path.to_str().unwrap()),
+        resources_dir: manifest_content
+            .as_ref()
+            .and_then(|a| a.resources_dir.clone())
+            .unwrap_or("resources".to_owned()),
 
         project_path: project_path,
         package_name: manifest_content
@@ -173,6 +185,10 @@ pub fn load(manifest_path: &Path) -> Config {
             .and_then(|a| a.package_name.clone())
             .unwrap_or_else(|| format!("rust.{}", package_name)),
         package_version: package_version,
+        version_code: manifest_content
+            .as_ref()
+            .and_then(|a| a.version_code)
+            .unwrap_or(1),
 
         project_name: package_name.clone(),
         project_name_underscore: project_name_underscore.clone(),
@@ -180,6 +196,7 @@ pub fn load(manifest_path: &Path) -> Config {
             .as_ref()
             .and_then(|a| a.label.clone())
             .unwrap_or_else(|| package_name.clone()),
+
         package_icon: manifest_content.as_ref().and_then(|a| a.icon.clone()),
 
         ignore_linker_config: false,
@@ -189,12 +206,12 @@ pub fn load(manifest_path: &Path) -> Config {
         compile_sdk_version: manifest_content
             .as_ref()
             .and_then(|a| a.compile_sdk_version)
-            .unwrap_or(24),
+            .unwrap_or(26),
 
         build_tools_version: manifest_content
             .as_ref()
-            .and_then(|a| a.build_tools_version)
-            .unwrap_or(24),
+            .and_then(|a| a.build_tools_version.clone())
+            .unwrap_or("26.0.1".to_owned()),
 
         min_sdk_version: manifest_content
             .as_ref()
@@ -243,7 +260,7 @@ pub fn load(manifest_path: &Path) -> Config {
             .as_ref()
             .and_then(|a| a.opengles_version_minor)
             .unwrap_or(0),
-        meta: manifest_content
+        meta: manifest_content,
     }
 }
 

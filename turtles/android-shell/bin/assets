@@ -1,0 +1,30 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ROOT="$( cd $DIR/../ && pwd)"
+
+cd $ROOT
+# RUST_APP_NAME=$RUST_APP_NAME \
+RUST_APP_ASSETS=$RUST_APP_ROOT/$RUST_APP_RESOURCES
+TARGET_DIR=$ROOT/app/src/main/res/
+
+if [ ! -d $RUST_APP_ASSETS ]; then
+  echo "Could not find RUST_APP_ASSETS: $RUST_APP_ASSETS"
+  echo "Skipping assets install..."
+else
+  if [[ "$(which rsync)" != "" ]]; then
+    echo "Installing resources from: "
+    echo "SRC: $RUST_APP_ASSETS"
+    echo "DST: $TARGET_DIR"
+    echo
+
+    rsync -av $RUST_APP_ASSETS/ $TARGET_DIR/
+  else
+    echo "Could not find rsync command in the \$PATH"
+    echo "Skipping assets install..."
+    exit 1
+  fi
+fi
+
+
+

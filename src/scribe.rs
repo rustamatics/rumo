@@ -2,7 +2,7 @@ use std::fs::{File, OpenOptions};
 use std::io::{Read, Write, BufWriter};
 use std;
 use std::fmt;
-use std::process::exit;
+// use std::process::exit;
 use regex::Regex;
 use config::Config;
 
@@ -57,8 +57,6 @@ impl<'a> From<&'a str> for ScribeVal {
         ScribeVal { input: s.to_owned() }
     }
 }
-
-
 
 impl Into<ScribeVal> for Vec<ndk::Arch> {
     fn into(self) -> ScribeVal {
@@ -121,13 +119,23 @@ impl ScribeChain {
         self.contents = out.into_owned();
         self
     }
+
+    fn replace(&mut self, var: &str, val: String) -> &mut Self {
+        let r = format!("{}", var);
+        let regex = Regex::new(&*r).unwrap();
+        let data = self.contents.clone();
+        let out = regex.replace(&data[..], &val[..]);
+
+        self.contents = out.into_owned();
+        self
+    }
 }
 
 pub fn turtle_shell(config: &Config) {
     let root = config.project_path_str();
     app_gradle(config, root);
     android_resource_strings(config, root);
-    exit(1);
+    android_manifest(config, root);
 }
 
 fn app_gradle(config: &Config, root: &str) {
@@ -139,10 +147,11 @@ fn app_gradle(config: &Config, root: &str) {
 
     gradle_build_chain
         .gradle("compileSdkVersion", config.compile_sdk_version)
-        .gradle("buildToolsVersion", config.build_tools_version)
+        .gradle("buildToolsVersion", config.build_tools_version.clone())
         .gradle("minSdkVersion", config.min_sdk_version)
         .gradle("targetSdkVersion", config.target_sdk_version)
-        .gradle("versionCode", config.package_version.clone())
+        .gradle("versionCode", config.version_code)
+        .gradle("versionName", config.package_version.clone())
         .gradle("applicationId", config.package_name.clone())
         .gradle("abiFilters", targets.clone())
         .gradle("include", targets);
@@ -153,6 +162,25 @@ fn app_gradle(config: &Config, root: &str) {
     file_write(&mut gradle_build_chain.contents[..], path)
         .expect("Failed to write gradle.build to android shell");
 
+}
+fn android_manifest(config: &Config, root: &str) {
+    let manifest = &*format!(
+        "{}/target/android-shell/app/src/main/AndroidManifest.xml",
+        root
+    );
+
+    let mut manifest_chain = ScribeChain { contents: file_contents(manifest) };
+
+    manifest_chain.replace("com.rumo.shell", config.package_name.clone());
+    manifest_chain.replace("[version_name]", config.package_version.clone());
+    manifest_chain.replace("[version_code]", config.version_code.to_string());
+
+    if let Some(package_icon) = config.package_icon.clone() {
+        manifest_chain.replace("@mipmap/ic_launcher", package_icon);
+    }
+
+    file_write(&mut manifest_chain.contents[..], manifest)
+        .expect("Failed to write AndroidManifest.xml in android-shell");
 }
 
 fn android_resource_strings(config: &Config, root: &str) {
@@ -172,7 +200,7 @@ fn android_resource_strings(config: &Config, root: &str) {
         if let Some(attrs) = meta.application_attributes {
             let colors = ["color_primary", "color_primary_dark", "color_accent"];
             for color in &colors {
-                if  let Some(c) = attrs.get(&color[..]) {
+                if let Some(c) = attrs.get(&color[..]) {
                     colors_res_chain.xml(color, "color", c.clone());
                 }
             }
