@@ -11,16 +11,18 @@ use ndk::Arch;
 struct TomlPackage {
     name: String,
     version: String,
-    metadata: Option<TomlMetadata>,
+    pub metadata: Option<TomlMetadata>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct TomlMetadata {
-    android: Option<TomlAndroid>,
+    pub android: Option<TomlAndroid>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-struct TomlAndroid {
+pub struct TomlAndroid {
+    pub application_attributes: Option<BTreeMap<String, String>>,
+    pub activity_attributes: Option<BTreeMap<String, String>>,
     package_name: Option<String>,
     label: Option<String>,
     icon: Option<String>,
@@ -32,8 +34,6 @@ struct TomlAndroid {
     build_tools_version: Option<u32>,
     android_version: Option<u32>,
     fullscreen: Option<bool>,
-    application_attributes: Option<BTreeMap<String, String>>,
-    activity_attributes: Option<BTreeMap<String, String>>,
     build_targets: Option<Vec<String>>,
     opengles_version_major: Option<u8>,
     opengles_version_minor: Option<u8>,
@@ -44,6 +44,7 @@ pub struct Config {
     // pub sdk_path: PathBuf,
     /// Path to the root of the Android NDK.
     pub ndk_path: PathBuf,
+    pub meta: Option<TomlAndroid>,
 
     /// The path to the root of the Cargo application.
     /// This comes from the cargo locate-project method or via
@@ -232,6 +233,7 @@ pub fn load(manifest_path: &Path) -> Config {
         activity_attributes: manifest_content.as_ref().and_then(|a| {
             map_to_string(a.activity_attributes.clone())
         }),
+
         target: None,
         opengles_version_major: manifest_content
             .as_ref()
@@ -241,6 +243,7 @@ pub fn load(manifest_path: &Path) -> Config {
             .as_ref()
             .and_then(|a| a.opengles_version_minor)
             .unwrap_or(0),
+        meta: manifest_content
     }
 }
 

@@ -80,7 +80,7 @@ fn update_existing_config(config: &Config, path: &str) {
         // Insert "target.triple" if not present
         if None == data[tkey].get(triple) {
             debug!("{} does not contain {}", tkey, triple);
-            let mut targets_table = data[tkey].as_table_mut().unwrap();
+            let targets_table = data[tkey].as_table_mut().unwrap();
             targets_table.insert(triple.to_owned(), Value::Table(Table::new()));
         }
 
