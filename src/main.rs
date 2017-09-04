@@ -211,7 +211,7 @@ fn main() {
 
         commands::build(&config);
 
-    } else if let Some(_) = matches.subcommand_matches("device-install") {
+    } else if let Some(_) = matches.subcommand_matches("install") {
         commands::install(&config);
     }
     // If we have not matched any sub command at this point,
