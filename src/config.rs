@@ -65,6 +65,12 @@ pub struct Config {
     pub package_name: String,
     pub package_version: String,
 
+    /// Name of the generated apk output file.
+    /// Note: version-name will be appended to this basename.
+    ///
+    /// ie. apk_basename-version-name.apk
+    pub apk_basename: String,
+
     /// Incrementing number for android versionCode
     /// (different than version_name)
     pub version_code: u32,
@@ -170,6 +176,17 @@ pub fn load(manifest_path: &Path) -> Config {
     let n = &package_name.clone()[..];
     let project_name_underscore = str::replace(&str::replace(n, "-", "_")[..], "rust.", "");
 
+    let mut apk_basename = project_name_underscore.clone();
+
+    if let Some(meta) = manifest_content.clone() {
+        if let Some(attrs) = meta.application_attributes {
+            if let Some(app_name) = attrs.get("app_name") {
+                let app_name_underscored = str::replace(app_name, " ", "_");
+                apk_basename = app_name_underscored.to_lowercase();
+            }
+        }
+    }
+
     Config {
         ndk_path: Path::new(&ndk_path).to_owned(),
 
@@ -184,6 +201,9 @@ pub fn load(manifest_path: &Path) -> Config {
             .as_ref()
             .and_then(|a| a.package_name.clone())
             .unwrap_or_else(|| format!("rust.{}", package_name)),
+
+        apk_basename: apk_basename,
+
         package_version: package_version,
         version_code: manifest_content
             .as_ref()

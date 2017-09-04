@@ -146,6 +146,7 @@ fn app_gradle(config: &Config, root: &str) {
     let targets: ScribeVal = config.build_targets.clone().into();
 
     gradle_build_chain
+        .replace("apk-basename", config.apk_basename.clone())
         .gradle("compileSdkVersion", config.compile_sdk_version)
         .gradle("buildToolsVersion", config.build_tools_version.clone())
         .gradle("minSdkVersion", config.min_sdk_version)

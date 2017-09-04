@@ -7,9 +7,10 @@ android {
         applicationId "com.rumo.shell"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 0
+        versionName "0.00"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        project.ext.set("archivesBaseName", "apk-basename-" + defaultConfig.versionName);
 
         ndk {
           abiFilters "..."
