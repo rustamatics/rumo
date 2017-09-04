@@ -17,7 +17,7 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             src/main/cpp/native-lib.cpp )
+             src/main/cpp/native-lib.c )
 
 # Define RUST_APP_ROOT for target cross compilation.
 # Value pulled from Environment with a fallback
